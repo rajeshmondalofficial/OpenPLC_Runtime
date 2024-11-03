@@ -73,7 +73,7 @@ typedef struct {
   __DECLARE_VAR(INT, BAUD_RATE)
   __DECLARE_VAR(STRING, MSG)
   __DECLARE_VAR(STRING, DEVICE)
-
+  __DECLARE_VAR(INT, SUCCESS)
   // FB private variables - TEMP, private and located variables
 } UART_SEND;
 
@@ -99,6 +99,7 @@ static void UART_SEND_init__(UART_SEND *data__, BOOL retain) {
   __INIT_VAR(data__->BAUD_RATE, 9600, retain)
   __INIT_VAR(data__->MSG,__STRING_LITERAL(0, ""),retain)
   __INIT_VAR(data__->DEVICE,__STRING_LITERAL(0, ""),retain)
+  __INIT_VAR(data__->SUCCESS,0, retain)
 }
 
 
@@ -121,6 +122,7 @@ static void UART_SEND_body__(UART_SEND *data__) {
     char* message = GetFbVar(MSG);
     char* device = GetFbVar(DEVICE);
     int uart_socket = uart_communication(message);
+    SetFbVar(SUCCESS, uart_socket);
 
     #undef GetFbVar
     #undef SetFbVar
