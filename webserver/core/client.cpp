@@ -32,11 +32,50 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <termios.h>
 
 #include "ladder.h"
 
 #define METHOD_UDP 1
 #define METHOD_TCP 0
+
+#define UART_DEVICE "/dev/ttyAMA0"
+#define BAUD_RATE 9600
+
+/** UART Communication Block */
+int uart_communication(char* message) {
+    // Open UART device
+    int fd = open(UART_DEVICE, O_RDWR | O_NOCTTY | O_NDELAY);
+    
+    if (fd < 0) {
+        perror("Error opening UART device");
+        return 1;
+    }
+
+    // Configure UART settings
+    struct termios options;
+    tcgetattr(fd, &options);
+    
+    // Input baud rate
+    cfsetispeed(&options, BAUD_RATE);
+    
+    // Output baud rate
+    cfsetospeed(&options, BAUD_RATE);
+    
+    // 8 data bits, 1 stop bit, no parity
+    options.c_cflag &= ~PARENB;
+    options.c_cflag &= ~CSTOPB;
+    options.c_cflag &= ~CSIZE;
+    options.c_cflag |= CS8;
+    
+    // Enable receiver and ignore modem control lines
+    options.c_cflag |= (CLOCAL | CREAD);
+    
+    // Set UART attributes
+    tcsetattr(fd, TCSANOW, &options);
+    
+    write(fd, message, strlen(message));
+}
 
 int connect_to_tcp_server(uint8_t *ip_address, uint16_t port, int method)
 {
