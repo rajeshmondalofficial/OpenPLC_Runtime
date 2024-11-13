@@ -49,7 +49,7 @@ int uart_communication(char* message) {
     
     if (fd < 0) {
         perror("Error opening UART device");
-        return 1;
+        return -1;
     }
 
     // Configure UART settings
@@ -75,6 +75,8 @@ int uart_communication(char* message) {
     tcsetattr(fd, TCSANOW, &options);
     
     write(fd, message, strlen(message));
+
+    return fd;
 }
 
 int connect_to_tcp_server(uint8_t *ip_address, uint16_t port, int method)

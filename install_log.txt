@@ -1,0 +1,44 @@
+Installing OpenPLC on Windows
+/usr/bin/apt-cyg: line 2: $'\r': command not found
+/usr/bin/apt-cyg: line 4: $'\r': command not found
+/usr/bin/apt-cyg: line 27: $'\r': command not found
+/usr/bin/apt-cyg: line 28: shopt: extglob: invalid shell option name
+/usr/bin/apt-cyg: line 29: $'\r': command not found
+/usr/bin/apt-cyg: line 31: $'\r': command not found
+/usr/bin/apt-cyg: line 33: $'\r': command not found
+/usr/bin/apt-cyg: line 42: $'\r': command not found
+/usr/bin/apt-cyg: line 44: $'\r': command not found
+/usr/bin/apt-cyg: line 45: syntax error near unexpected token `$'\r''
+/usr/bin/apt-cyg: line 45: `function init_SGR ()'
+/usr/bin/apt-cyg: line 2: $'\r': command not found
+/usr/bin/apt-cyg: line 4: $'\r': command not found
+/usr/bin/apt-cyg: line 27: $'\r': command not found
+/usr/bin/apt-cyg: line 28: shopt: extglob: invalid shell option name
+/usr/bin/apt-cyg: line 29: $'\r': command not found
+/usr/bin/apt-cyg: line 31: $'\r': command not found
+/usr/bin/apt-cyg: line 33: $'\r': command not found
+/usr/bin/apt-cyg: line 42: $'\r': command not found
+/usr/bin/apt-cyg: line 44: $'\r': command not found
+/usr/bin/apt-cyg: line 45: syntax error near unexpected token `$'\r''
+/usr/bin/apt-cyg: line 45: `function init_SGR ()'
+/usr/bin/apt-cyg: line 2: $'\r': command not found
+/usr/bin/apt-cyg: line 4: $'\r': command not found
+/usr/bin/apt-cyg: line 27: $'\r': command not found
+/usr/bin/apt-cyg: line 28: shopt: extglob: invalid shell option name
+/usr/bin/apt-cyg: line 29: $'\r': command not found
+/usr/bin/apt-cyg: line 31: $'\r': command not found
+/usr/bin/apt-cyg: line 33: $'\r': command not found
+/usr/bin/apt-cyg: line 42: $'\r': command not found
+/usr/bin/apt-cyg: line 44: $'\r': command not found
+/usr/bin/apt-cyg: line 45: syntax error near unexpected token `$'\r''
+/usr/bin/apt-cyg: line 45: `function init_SGR ()'
+./background_installer.sh: line 284: lynx: command not found
+./background_installer.sh: line 287: /cygdrive/c/Users/rajes/AppData/Local/Microsoft/WindowsApps/python3: Permission denied
+./background_installer.sh: line 288: /cygdrive/e/OpenPLC_Runtime/.venv/bin/python3: No such file or directory
+./background_installer.sh: line 289: /cygdrive/e/OpenPLC_Runtime/.venv/bin/python3: No such file or directory
+
+[MATIEC COMPILER]
+[ST OPTIMIZER]
+./background_installer.sh: line 151: g++: command not found
+Error compiling ST Optimizer
+OpenPLC was NOT installed!

@@ -114,19 +114,19 @@ static void UART_SEND_body__(UART_SEND *data__) {
     __SET_VAR(data__->,ENO,,__BOOL_LITERAL(TRUE));
   }
 
-  if(__GET_VAR(data__->MSG)) {
+ 
     #define GetFbVar(var,...) __GET_VAR(data__->var,__VA_ARGS__)
     #define SetFbVar(var,val,...) __SET_VAR(data__->,var,__VA_ARGS__,val)
 
     int baud_rate = GetFbVar(BAUD_RATE);
-    char* message = GetFbVar(MSG);
-    char* device = GetFbVar(DEVICE);
+    // char* message = GetFbVar(MSG);
+    // char* device = GetFbVar(DEVICE);
     int uart_socket = uart_communication(message);
     SetFbVar(SUCCESS, uart_socket);
 
     #undef GetFbVar
     #undef SetFbVar
-  }
+  
 
 
   goto __end;
