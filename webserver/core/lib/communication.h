@@ -121,7 +121,7 @@ static void UART_SEND_body__(UART_SEND *data__) {
     int baud_rate = GetFbVar(BAUD_RATE);
     // char* message = GetFbVar(MSG);
     // char* device = GetFbVar(DEVICE);
-    int uart_socket = uart_communication(message);
+    int uart_socket = uart_communication("Hi, From Open PLC");
     SetFbVar(SUCCESS, uart_socket);
 
     #undef GetFbVar
