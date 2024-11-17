@@ -77,6 +77,19 @@ typedef struct {
   // FB private variables - TEMP, private and located variables
 } UART_SEND;
 
+// UART_RECEIVE
+// Data part
+typedef struct {
+  // FB Interface - IN, OUT, IN_OUT variables
+  __DECLARE_VAR(BOOL, EN)
+  __DECLARE_VAR(BOOL, ENO)
+  __DECLARE_VAR(INT, BAUD_RATE)
+  __DECLARE_VAR(STRING, MESSAGE)
+  __DECLARE_VAR(STRING, DEVICE)
+  // FB private variables - TEMP, private and located variables
+} UART_RECEIVE;
+
+
 
 /************************************************************************
  *                 END OF COMMUNICATION LIB BLOCKS                      *
@@ -90,7 +103,8 @@ int connect_to_tcp_server(uint8_t *ip_address, uint16_t port, int method);
 int send_tcp_message(uint8_t *msg, size_t msg_size, int socket_id);
 int receive_tcp_message(uint8_t *msg_buffer, size_t buffer_size, int socket_id);
 int close_tcp_connection(int socket_id);
-int uart_communication(char* message);
+int uart_communication(uint8_t* message, uint8_t* device);
+char* receive_uart_communication(uint8_t* device)
 
 
 static void UART_SEND_init__(UART_SEND *data__, BOOL retain) {
@@ -121,9 +135,7 @@ static void UART_SEND_body__(UART_SEND *data__) {
     int baud_rate = GetFbVar(BAUD_RATE);
     IEC_STRING message = GetFbVar(MSG);
     IEC_STRING device = GetFbVar(DEVICE);
-    // char* message = GetFbVar(MSG);
-    // char* device = GetFbVar(DEVICE);
-    int uart_socket = uart_communication("Hi, From Open PLC");
+    int uart_socket = uart_communication(message.body, device.body);
     SetFbVar(SUCCESS, uart_socket);
 
     #undef GetFbVar
@@ -136,6 +148,45 @@ static void UART_SEND_body__(UART_SEND *data__) {
 __end:
   return;
 } // UART_SEND_body__()
+
+static void UART_RECEIVE_init__(UART_RECEIVE *data__, BOOL retain) {
+  __INIT_VAR(data__->EN,__BOOL_LITERAL(TRUE),retain)
+  __INIT_VAR(data__->ENO,__BOOL_LITERAL(TRUE),retain)
+  __INIT_VAR(data__->BAUD_RATE, 9600, retain)
+  __INIT_VAR(data__->MESSAGE,__STRING_LITERAL(0, ""),retain)
+  __INIT_VAR(data__->DEVICE,__STRING_LITERAL(0, ""),retain)
+}
+
+// Code Part
+static void UART_RECEIVE_body__(UART_RECEIVE *data__) {
+  // Control execution
+  if (!__GET_VAR(data__->EN)) {
+    __SET_VAR(data__->,ENO,,__BOOL_LITERAL(FALSE));
+    return;
+  }
+  else {
+    __SET_VAR(data__->,ENO,,__BOOL_LITERAL(TRUE));
+  }
+
+  #define GetFbVar(var,...) __GET_VAR(data__->var,__VA_ARGS__)
+  #define SetFbVar(var,val,...) __SET_VAR(data__->,var,__VA_ARGS__,val)
+
+  IEC_STRING device = GetFbVar(DEVICE);
+  int baud_rate = GetFbVar(BAUD_RATE);
+
+  char* message = receive_uart_communication(device.body);
+  SetFbVar(MESSAGE, message);
+
+  #undef GetFbVar
+  #undef SetFbVar
+
+
+  goto __end;
+
+__end:
+  return;
+} // UART_SEND_body__()
+
 
 
 static void TCP_CONNECT_init__(TCP_CONNECT *data__, BOOL retain) {

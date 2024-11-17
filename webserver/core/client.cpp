@@ -43,9 +43,9 @@
 #define BAUD_RATE 9600
 
 /** UART Communication Block */
-int uart_communication(char* message) {
+int uart_communication(uint8_t* message, uint8_t* device) {
     // Open UART device
-    int fd = open(UART_DEVICE, O_RDWR | O_NOCTTY | O_NDELAY);
+    int fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
     
     if (fd < 0) {
         perror("Error opening UART device");
@@ -77,6 +77,44 @@ int uart_communication(char* message) {
     write(fd, message, strlen(message));
 
     return fd;
+}
+
+char* receive_uart_communication(uint8_t* device) {
+    int serial_fd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY); 
+    if (serial_fd == -1) { 
+        perror("Unable to open serial port"); 
+        exit(1); 
+    } 
+    struct termios options; 
+    tcgetattr(serial_fd, &options); 
+    
+    // Set baud rate 
+    cfsetispeed(&options, BAUD_RATE); 
+    cfsetospeed(&options, BAUD_RATE); 
+    // Configure 8N1 (8 data bits, no parity, 1 stop bit) 
+    options.c_cflag &= ~PARENB; 
+    options.c_cflag &= ~CSTOPB; 
+    options.c_cflag &= ~CSIZE; 
+    options.c_cflag |= CS8; 
+    // Enable receiver and set local mode 
+    options.c_cflag |= (CLOCAL | CREAD); 
+    // Set timeout and minimum bytes to read 
+    options.c_cc[VMIN] = 0; options.c_cc[VTIME] = 10; 
+    // Timeout in deciseconds 
+    // Apply the configuration 
+    tcsetattr(serial_fd, TCSANOW, &options); 
+    char buffer[256]; 
+    while (1) { 
+        int bytes_read = read(serial_fd, buffer, sizeof(buffer)); 
+        if (bytes_read > 0) { 
+            buffer[bytes_read] = '\0';
+            return buffer;
+            printf("Received: %s\n", buffer); 
+        } 
+        usleep(100000); 
+        // Sleep for 100ms 
+    } 
+    close(serial_fd); 
 }
 
 int connect_to_tcp_server(uint8_t *ip_address, uint16_t port, int method)
