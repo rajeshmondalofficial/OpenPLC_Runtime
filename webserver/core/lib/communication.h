@@ -104,7 +104,7 @@ int send_tcp_message(uint8_t *msg, size_t msg_size, int socket_id);
 int receive_tcp_message(uint8_t *msg_buffer, size_t buffer_size, int socket_id);
 int close_tcp_connection(int socket_id);
 int uart_communication(uint8_t* message, uint8_t* device);
-char* receive_uart_communication(uint8_t* device)
+char* receive_uart_communication(uint8_t* device);
 
 
 static void UART_SEND_init__(UART_SEND *data__, BOOL retain) {
