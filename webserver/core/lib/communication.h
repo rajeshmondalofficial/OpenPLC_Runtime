@@ -174,8 +174,8 @@ static void UART_RECEIVE_body__(UART_RECEIVE *data__) {
   IEC_STRING device = GetFbVar(DEVICE);
   int baud_rate = GetFbVar(BAUD_RATE);
 
-  char* message = receive_uart_communication(device.body);
-  SetFbVar(MESSAGE, message);
+  // char* message = receive_uart_communication(device.body);
+  // SetFbVar(MESSAGE, message);
 
   #undef GetFbVar
   #undef SetFbVar
