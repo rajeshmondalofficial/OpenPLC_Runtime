@@ -80,7 +80,7 @@ int uart_communication(uint8_t* message, uint8_t* device) {
 }
 
 char* receive_uart_communication(uint8_t* device) {
-    int serial_fd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY); 
+    int serial_fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY); 
     if (serial_fd == -1) { 
         perror("Unable to open serial port"); 
         exit(1); 
