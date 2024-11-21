@@ -104,7 +104,7 @@ int send_tcp_message(uint8_t *msg, size_t msg_size, int socket_id);
 int receive_tcp_message(uint8_t *msg_buffer, size_t buffer_size, int socket_id);
 int close_tcp_connection(int socket_id);
 int uart_communication(uint8_t* message, uint8_t* device);
-char* receive_uart_communication(uint8_t* device);
+int receive_uart_communication(uint8_t* device, uint8_t* message, size_t buffer_size);
 
 
 static void UART_SEND_init__(UART_SEND *data__, BOOL retain) {
@@ -172,10 +172,11 @@ static void UART_RECEIVE_body__(UART_RECEIVE *data__) {
   #define SetFbVar(var,val,...) __SET_VAR(data__->,var,__VA_ARGS__,val)
 
   IEC_STRING device = GetFbVar(DEVICE);
+  IEC_STRING message = GetFbVar(MESSAGE);
   int baud_rate = GetFbVar(BAUD_RATE);
 
-  // char* message = receive_uart_communication(device.body);
-  // SetFbVar(MESSAGE, message);
+  int bytes_received = receive_uart_communication(device.body, message.body, STR_MAX_LEN);
+  SetFbVar(MESSAGE, message);
 
   #undef GetFbVar
   #undef SetFbVar
