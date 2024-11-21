@@ -42,10 +42,14 @@
 #define UART_DEVICE "/dev/ttyAMA0"
 #define BAUD_RATE 9600
 
+int fd = -1;
+
 /** UART Communication Block */
 int uart_communication(uint8_t* message, uint8_t* device) {
     // Open UART device
-    int fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+    if(fd < 0) {
+        fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+    }
     
     if (fd < 0) {
         perror("Error opening UART device");
