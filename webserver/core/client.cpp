@@ -83,7 +83,7 @@ int uart_communication(uint8_t* message, uint8_t* device) {
     return fd;
 }
 
-char* receive_uart_communication(uint8_t* device) {
+int receive_uart_communication(uint8_t* device, uint8_t* message, size_t buffer_size) {
     int serial_fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY); 
     if (serial_fd == -1) { 
         perror("Unable to open serial port"); 
@@ -106,19 +106,27 @@ char* receive_uart_communication(uint8_t* device) {
     options.c_cc[VMIN] = 0; options.c_cc[VTIME] = 10; 
     // Timeout in deciseconds 
     // Apply the configuration 
-    tcsetattr(serial_fd, TCSANOW, &options); 
-    char buffer[256]; 
-    while (1) { 
-        int bytes_read = read(serial_fd, buffer, sizeof(buffer)); 
-        if (bytes_read > 0) { 
-            buffer[bytes_read] = '\0';
-            return buffer;
-            printf("Received: %s\n", buffer); 
-        } 
-        usleep(100000); 
-        // Sleep for 100ms 
-    } 
+    tcsetattr(serial_fd, TCSANOW, &options);
+
+    char log_msg[1000];
+
+    int bytes_read = read(serial_fd, message, buffer_size);  
+    message[bytes_read] = 0;
+    sprintf(log_msg, "TCP Client: msg from server => %s\n", message);
+    log(log_msg);
+    // char buffer[256]; 
+    // while (1) { 
+    //     int bytes_read = read(serial_fd, buffer, sizeof(buffer)); 
+    //     if (bytes_read > 0) { 
+    //         buffer[bytes_read] = '\0';
+    //         return buffer;
+    //         printf("Received: %s\n", buffer); 
+    //     } 
+    //     usleep(100000); 
+    //     // Sleep for 100ms 
+    // } 
     close(serial_fd); 
+    return bytes_read;
 }
 
 int connect_to_tcp_server(uint8_t *ip_address, uint16_t port, int method)
