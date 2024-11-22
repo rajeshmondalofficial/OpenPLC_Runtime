@@ -43,6 +43,10 @@
 #define BAUD_RATE 9600
 
 int fd = -1;
+int serial_fd = -1;
+
+int listening = 0;
+int bytes_received;
 
 /** UART Communication Block */
 int uart_communication(uint8_t* message, uint8_t* device) {
@@ -83,8 +87,24 @@ int uart_communication(uint8_t* message, uint8_t* device) {
     return fd;
 }
 
+int uart_listen(uint8_t* message, size_t buffer_size) {
+    listening = 1;
+    char log_msg[1000];
+    while(1) {
+        int bytes_read = read(serial_fd, message, buffer_size); 
+        bytes_received = 123;
+        message[bytes_read] = 0;
+        sprintf(log_msg, "TCP Client: msg from server:  %s\n", message);
+        log(log_msg);
+        usleep(20000);
+    }
+
+}
+
 int receive_uart_communication(uint8_t* device, uint8_t* message, size_t buffer_size) {
-    int serial_fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY); 
+    if(serial_fd < 0) {
+        serial_fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+    } 
     if (serial_fd == -1) { 
         perror("Unable to open serial port"); 
         exit(1); 
@@ -112,8 +132,11 @@ int receive_uart_communication(uint8_t* device, uint8_t* message, size_t buffer_
 
     int bytes_read = read(serial_fd, message, buffer_size);  
     message[bytes_read] = 0;
-    sprintf(log_msg, "TCP Client: msg from server => %s\n", message);
-    log(log_msg);
+
+    if(listening == 0) {
+        uart_listen(message, buffer_size);
+    }
+    
     // char buffer[256]; 
     // while (1) { 
     //     int bytes_read = read(serial_fd, buffer, sizeof(buffer)); 
@@ -125,8 +148,8 @@ int receive_uart_communication(uint8_t* device, uint8_t* message, size_t buffer_
     //     usleep(100000); 
     //     // Sleep for 100ms 
     // } 
-    close(serial_fd); 
-    return bytes_read;
+    
+    return bytes_received;
 }
 
 int connect_to_tcp_server(uint8_t *ip_address, uint16_t port, int method)
