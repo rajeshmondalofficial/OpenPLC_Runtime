@@ -33,6 +33,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <termios.h>
+#include <pthread.h>
 
 #include "ladder.h"
 
@@ -44,61 +45,112 @@
 
 int fd = -1;
 int serial_fd = -1;
-
 int listening = 0;
 int bytes_received;
 
-/** UART Communication Block */
-int uart_communication(uint8_t* message, uint8_t* device) {
-    // Open UART device
-    if(fd < 0) {
-        fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
-    }
-    
-    if (fd < 0) {
-        perror("Error opening UART device");
-        return -1;
-    }
+// Global Variables
+int global_uart_fd = -1;
+unsigned char inputData[256];
+pthread_mutex_t uart_mutex;  // Mutex for thread-safe access
+unsigned char dataReady = 0;    // Flag for new data
+int uart_listening = -1; // Flag for listening UART
+char log_msg[1000];
 
-    // Configure UART settings
-    struct termios options;
-    tcgetattr(fd, &options);
-    
-    // Input baud rate
-    cfsetispeed(&options, BAUD_RATE);
-    
-    // Output baud rate
-    cfsetospeed(&options, BAUD_RATE);
-    
-    // 8 data bits, 1 stop bit, no parity
-    options.c_cflag &= ~PARENB;
-    options.c_cflag &= ~CSTOPB;
-    options.c_cflag &= ~CSIZE;
-    options.c_cflag |= CS8;
-    
-    // Enable receiver and ignore modem control lines
-    options.c_cflag |= (CLOCAL | CREAD);
-    
-    // Set UART attributes
-    tcsetattr(fd, TCSANOW, &options);
-    
-    write(fd, message, strlen(message));
 
-    return fd;
+// UART Initialize
+void uart_init(uint8_t* device) {
+    if(global_uart_fd < 0) {
+        // Initialize UART Connection
+        global_uart_fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+        if (fd < 0) {
+            perror("Error opening UART device");
+            return -1;
+        }
+
+        // Configure UART settings
+        struct termios options;
+        tcgetattr(fd, &options);
+
+        // Input baud rate
+        cfsetispeed(&options, BAUD_RATE);
+        
+        // Output baud rate
+        cfsetospeed(&options, BAUD_RATE);
+        
+        // 8 data bits, 1 stop bit, no parity
+        options.c_cflag &= ~PARENB;
+        options.c_cflag &= ~CSTOPB;
+        options.c_cflag &= ~CSIZE;
+        options.c_cflag |= CS8;
+        
+        // Enable receiver and ignore modem control lines
+        options.c_cflag |= (CLOCAL | CREAD);
+        
+        // Set UART attributes
+        tcsetattr(fd, TCSANOW, &options);
+
+        fcntl(global_uart_fd, F_SETFL, FNDELAY);
+        // Initialize the mutex
+        pthread_mutex_init(&uart_mutex, NULL);
+    }
 }
 
-int uart_listen(uint8_t* message, size_t buffer_size) {
-    listening = 1;
-    char log_msg[1000];
-    while(1) {
-        int bytes_read = read(serial_fd, message, buffer_size); 
-        bytes_received = 123;
-        message[bytes_read] = 0;
-        sprintf(log_msg, "TCP Client: msg from server:  %s\n", message);
-        log(log_msg);
-        usleep(20000);
+/** UART Communication Block */
+int uart_send(uint8_t* message, uint8_t* device) {
+    if(global_uart_fd < 0) {
+        uart_init(device);
+    }
+    write(global_uart_fd, message, strlen(message));
+    return global_uart_fd;
+}
+
+// Listen to UART 
+void *uart_listener_thread(void *arg) {
+    char buffer[256];
+    while (1) {
+        int bytes_read = read(global_uart_fd, buffer, sizeof(buffer) - 1);
+        if (bytes_read > 0) {
+            buffer[bytes_read] = '\0'; // Null-terminate the received string
+            // Lock the mutex to update shared data
+            pthread_mutex_lock(&uart_mutex);
+            strncpy(inputData, buffer, sizeof(inputData) - 1);
+            inputData[sizeof(inputData) - 1] = '\0'; // Safety null-termination
+            dataReady = 1; // Set flag to indicate data is ready
+            pthread_mutex_unlock(&uart_mutex);
+        }
+        usleep(1000); // Short sleep to avoid busy waiting
+    }
+    return NULL;
+}
+
+// UART Listen Thread
+void start_uart_thread() {
+    pthread_t thread_id;
+    if (pthread_create(&thread_id, NULL, uart_listener_thread, NULL) != 0) {
+        perror("Failed to create UART listener thread");
+        uart_listening = -1;
     }
 
+    uart_listening = 0; // Set flag to indicate UART listening
+}
+
+// Process Data Received From UART
+int uart_listen(uint8_t* device, uint8_t* message, size_t buffer_size) {
+    if(global_uart_fd < 0) {
+        uart_init(device);
+    }
+    if(uart_listening < 0) {
+        start_uart_thread();
+    }
+   // Print buffer contents (example processing)
+    pthread_mutex_lock(&uart_mutex);
+    if (dataReady) {
+        sprintf(log_msg, "Received UART Data: => %s\n", inputData);
+        log(log_msg);
+        printf("Received UART Data: %s\n", inputData);
+        dataReady = 0; // Reset flag after processing
+    }
+    pthread_mutex_unlock(&uart_mutex);
 }
 
 int receive_uart_communication(uint8_t* device, uint8_t* message, size_t buffer_size) {
@@ -133,21 +185,9 @@ int receive_uart_communication(uint8_t* device, uint8_t* message, size_t buffer_
     int bytes_read = read(serial_fd, message, buffer_size);  
     message[bytes_read] = 0;
 
-    if(listening == 0) {
-        uart_listen(message, buffer_size);
-    }
-    
-    // char buffer[256]; 
-    // while (1) { 
-    //     int bytes_read = read(serial_fd, buffer, sizeof(buffer)); 
-    //     if (bytes_read > 0) { 
-    //         buffer[bytes_read] = '\0';
-    //         return buffer;
-    //         printf("Received: %s\n", buffer); 
-    //     } 
-    //     usleep(100000); 
-    //     // Sleep for 100ms 
-    // } 
+    // if(listening == 0) {
+    //     uart_listen(message, buffer_size);
+    // }
     
     return bytes_received;
 }
