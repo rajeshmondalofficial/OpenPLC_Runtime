@@ -103,8 +103,8 @@ int connect_to_tcp_server(uint8_t *ip_address, uint16_t port, int method);
 int send_tcp_message(uint8_t *msg, size_t msg_size, int socket_id);
 int receive_tcp_message(uint8_t *msg_buffer, size_t buffer_size, int socket_id);
 int close_tcp_connection(int socket_id);
-int uart_communication(uint8_t* message, uint8_t* device);
-int receive_uart_communication(uint8_t* device, uint8_t* message, size_t buffer_size);
+int uart_send(uint8_t* message, uint8_t* device);
+int uart_listen(uint8_t* device, uint8_t* message, size_t buffer_size);
 
 
 static void UART_SEND_init__(UART_SEND *data__, BOOL retain) {
@@ -128,20 +128,17 @@ static void UART_SEND_body__(UART_SEND *data__) {
     __SET_VAR(data__->,ENO,,__BOOL_LITERAL(TRUE));
   }
 
- 
-    #define GetFbVar(var,...) __GET_VAR(data__->var,__VA_ARGS__)
-    #define SetFbVar(var,val,...) __SET_VAR(data__->,var,__VA_ARGS__,val)
+  #define GetFbVar(var,...) __GET_VAR(data__->var,__VA_ARGS__)
+  #define SetFbVar(var,val,...) __SET_VAR(data__->,var,__VA_ARGS__,val)
 
-    int baud_rate = GetFbVar(BAUD_RATE);
-    IEC_STRING message = GetFbVar(MSG);
-    IEC_STRING device = GetFbVar(DEVICE);
-    int uart_socket = uart_communication(message.body, device.body);
-    SetFbVar(SUCCESS, uart_socket);
+  int baud_rate = GetFbVar(BAUD_RATE);
+  IEC_STRING message = GetFbVar(MSG);
+  IEC_STRING device = GetFbVar(DEVICE);
+  int uart_socket = uart_send(message.body, device.body);
+  SetFbVar(SUCCESS, uart_socket);
 
-    #undef GetFbVar
-    #undef SetFbVar
-  
-
+  #undef GetFbVar
+  #undef SetFbVar
 
   goto __end;
 
@@ -175,12 +172,11 @@ static void UART_RECEIVE_body__(UART_RECEIVE *data__) {
   IEC_STRING message = GetFbVar(MESSAGE);
   int baud_rate = GetFbVar(BAUD_RATE);
 
-  int bytes_received = receive_uart_communication(device.body, message.body, STR_MAX_LEN);
+  int bytes_received = uart_listen(device.body, message.body, STR_MAX_LEN);
   SetFbVar(MESSAGE, message);
 
   #undef GetFbVar
   #undef SetFbVar
-
 
   goto __end;
 
