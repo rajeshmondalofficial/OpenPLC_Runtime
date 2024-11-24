@@ -70,7 +70,7 @@ if [ "$OPENPLC_PLATFORM" = "win" ]; then
         echo "Compilation finished with errors!"
         exit 1
     fi
-    echo "Compilation Finished! Hope UART works successfully"
+    echo "Compilation finished successfully!"
     exit 0
     
 elif [ "$OPENPLC_PLATFORM" = "linux" ]; then
@@ -109,7 +109,7 @@ elif [ "$OPENPLC_PLATFORM" = "linux" ]; then
         echo "Compilation finished with errors!"
         exit 1
     fi
-    echo "Compilation Finished! Hope UART works successfully"
+    echo "Compilation finished successfully!"
     exit 0
     
 elif [ "$OPENPLC_PLATFORM" = "rpi" ]; then
@@ -148,7 +148,7 @@ elif [ "$OPENPLC_PLATFORM" = "rpi" ]; then
         echo "Compilation finished with errors!"
         exit 1
     fi
-    echo "Compilation Finished! Hope UART works successfully"
+    echo "Compilation finished successfully!"
     exit 0
 
 elif [ "$OPENPLC_PLATFORM" = "opi" ]; then
@@ -176,7 +176,7 @@ elif [ "$OPENPLC_PLATFORM" = "opi" ]; then
         echo "Compilation finished with errors!"
         exit 1
     fi
-    echo "Compilation Finished! Hope UART works successfully"
+    echo "Compilation finished successfully!"
     exit 0
 
 else
