@@ -62,9 +62,12 @@ void uart_init(uint8_t* device) {
     if(global_uart_fd < 0) {
         // Initialize UART Connection
         global_uart_fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
-        if (fd < 0) {
+        sprintf(log_msg, "UART: Connection Initialize: => %d\n", global_uart_fd);
+        log(log_msg);
+        if (global_uart_fd < 0) {
             perror("Error opening UART device");
-            return -1;
+            sprintf(log_msg, "UART: Connection Failed: => %d\n", global_uart_fd);
+            log(log_msg);
         }
 
         // Configure UART settings
@@ -99,9 +102,12 @@ void uart_init(uint8_t* device) {
 int uart_send(uint8_t* message, uint8_t* device) {
     if(global_uart_fd < 0) {
         uart_init(device);
+        write(global_uart_fd, message, strlen(message));
+        return global_uart_fd;
+    } else {
+        write(global_uart_fd, message, strlen(message));
+        return global_uart_fd;
     }
-    write(global_uart_fd, message, strlen(message));
-    return global_uart_fd;
 }
 
 // Listen to UART 
