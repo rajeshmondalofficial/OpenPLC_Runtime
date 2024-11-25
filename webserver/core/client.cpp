@@ -102,9 +102,7 @@ void uart_init(uint8_t* device) {
 int uart_send(uint8_t* message, uint8_t* device) {
     if(global_uart_fd < 0) {
         uart_init(device);
-        int write_id = write(global_uart_fd, message, strlen(message));
-        sprintf(log_msg, "UART: Connection Write: => %d\n", write_id);
-        log(log_msg);
+        write(global_uart_fd, message, strlen(message));
         return global_uart_fd;
     } else {
         write(global_uart_fd, message, strlen(message));
@@ -117,8 +115,6 @@ void *uart_listener_thread(void *arg) {
     char buffer[256];
     while (1) {
         int bytes_read = read(global_uart_fd, buffer, sizeof(buffer) - 1);
-        sprintf(log_msg, "UART: Connection Receive: => %d\n", bytes_read);
-        log(log_msg);
         if (bytes_read > 0) {
             buffer[bytes_read] = '\0'; // Null-terminate the received string
             // Lock the mutex to update shared data
