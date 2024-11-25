@@ -72,7 +72,7 @@ void uart_init(uint8_t* device) {
 
         // Configure UART settings
         struct termios options;
-        tcgetattr(fd, &options);
+        tcgetattr(global_uart_fd, &options);
 
         // Input baud rate
         cfsetispeed(&options, BAUD_RATE);
@@ -90,9 +90,9 @@ void uart_init(uint8_t* device) {
         options.c_cflag |= (CLOCAL | CREAD);
         
         // Set UART attributes
-        tcsetattr(fd, TCSANOW, &options);
+        tcsetattr(global_uart_fd, TCSANOW, &options);
 
-        fcntl(global_uart_fd, F_SETFL, FNDELAY);
+        fcntl(global_uart_fd, F_SETFL, 0);
         // Initialize the mutex
         pthread_mutex_init(&uart_mutex, NULL);
     }
@@ -139,9 +139,9 @@ void start_uart_thread() {
     if (pthread_create(&thread_id, NULL, uart_listener_thread, NULL) != 0) {
         perror("Failed to create UART listener thread");
         uart_listening = -1;
+    } else {
+        uart_listening = 0; // Set flag to indicate UART listening
     }
-
-    uart_listening = 0; // Set flag to indicate UART listening
 }
 
 // Process Data Received From UART
