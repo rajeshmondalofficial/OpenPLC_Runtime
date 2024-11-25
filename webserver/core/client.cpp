@@ -103,7 +103,7 @@ int uart_send(uint8_t* message, uint8_t* device) {
     if(global_uart_fd < 0) {
         uart_init(device);
         int write_id = write(global_uart_fd, message, strlen(message));
-        sprintf(log_msg, "UART: Connection Receive: => %d\n", write_id);
+        sprintf(log_msg, "UART: Connection Write: => %d\n", write_id);
         log(log_msg);
         return global_uart_fd;
     } else {
