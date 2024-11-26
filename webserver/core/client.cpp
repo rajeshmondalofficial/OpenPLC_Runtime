@@ -126,7 +126,7 @@ void *uart_listener_thread(void *arg) {
             dataReady = 1; // Set flag to indicate data is ready
             pthread_mutex_unlock(&uart_mutex);
         }
-        usleep(1000); // Short sleep to avoid busy waiting
+        // usleep(1000); // Short sleep to avoid busy waiting
     }
     return NULL;
 }
