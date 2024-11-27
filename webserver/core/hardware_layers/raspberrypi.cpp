@@ -37,8 +37,8 @@
     #define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
 #endif
 
-#define MAX_INPUT 		14
-#define MAX_OUTPUT 		11
+#define MAX_INPUT 		13
+#define MAX_OUTPUT 		10
 #define MAX_ANALOG_OUT	1
 
 /********************I/O PINS CONFIGURATION*********************
@@ -50,11 +50,11 @@
 ****************************************************************/
 //inBufferPinMask: pin mask for each input, which
 //means what pin is mapped to that OpenPLC input
-int inBufferPinMask[MAX_INPUT] = { 2, 3, 4, 17, 27, 22, 10, 9, 11, 5, 6, 13, 19, 26 };
+int inBufferPinMask[MAX_INPUT] = { 2, 3, 4, 17, 27, 22, 9, 11, 5, 6, 13, 19, 26 };
 
 //outBufferPinMask: pin mask for each output, which
 //means what pin is mapped to that OpenPLC output
-int outBufferPinMask[MAX_OUTPUT] =	{ 14, 15, 23, 24, 25, 8, 7, 12, 16, 20, 21 };
+int outBufferPinMask[MAX_OUTPUT] =	{ 14, 15, 23, 24, 25, 7, 12, 16, 20, 21 };
 
 //analogOutBufferPinMask: pin mask for the analog PWM
 //output of the RaspberryPi
