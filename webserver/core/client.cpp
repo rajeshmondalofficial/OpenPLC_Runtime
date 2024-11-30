@@ -91,6 +91,7 @@ void uart_init(uint8_t* device) {
         
         // Set UART attributes
         tcsetattr(global_uart_fd, TCSANOW, &options);
+        tcflush(global_uart_fd, TCIOFLUSH);
 
         fcntl(global_uart_fd, F_SETFL, 0);
         // Initialize the mutex
