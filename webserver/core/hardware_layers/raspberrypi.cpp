@@ -69,6 +69,10 @@ void initializeHardware()
     gpioInitialise();
     //piHiPri(99);
 
+    // Set GPIO for UART
+    gpioSetMode(8, PI_ALT0);
+    gpioSetMode(10, PI_ALT0);
+
     //set pins as input
     for (int i = 0; i < MAX_INPUT; i++)
     {
