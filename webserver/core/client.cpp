@@ -133,8 +133,8 @@ void *uart_listener_thread(void *arg) {
             // Lock the mutex to update shared data
             pthread_mutex_lock(&uart_mutex);
             strncpy(inputData, buffer, sizeof(inputData) - 1);
-            sprintf(log_msg, "UART: Connection Receive: => %s\n", inputData);
-            log(log_msg);
+            // sprintf(log_msg, "UART: Connection Receive: => %s\n", inputData);
+            // log(log_msg);
             inputData[sizeof(inputData) - 1] = '\0'; // Safety null-termination
             dataReady = 1; // Set flag to indicate data is ready
             pthread_mutex_unlock(&uart_mutex);
@@ -156,29 +156,32 @@ void start_uart_thread() {
 }
 
 // Process Data Received From UART
-int uart_listen(uint8_t* device, uint8_t* message, size_t buffer_size) {
+char* uart_listen(uint8_t* device, uint8_t* message, size_t buffer_size) {
     if(global_uart_fd < 0) {
         uart_init(device);
     }
     if(uart_listening < 0) {
         start_uart_thread();
     }
+
+    static char message_data[256]; // Static buffer to return data
+
    // Print buffer contents (example processing)
     pthread_mutex_lock(&uart_mutex);
     if (dataReady) {
-        sprintf(log_msg, "Received UART Data: => %s\n", inputData);
-        log(log_msg);
-        printf("Received UART Data: %s\n", inputData);
+        // sprintf(log_msg, "Received UART Data: => %s\n", inputData);
+        // log(log_msg);
+        // printf("Received UART Data: %s\n", inputData);
 
-        // // Copy the content to the IEC STRING variable
-        strncpy(message, inputData, 255); // Copy up to 255 characters
-        message = '\0';           // Ensure null termination
-        // // Set the IEC STRING length
-        // message = (unsigned char)strlen(message);
-        
+        strncpy(message_data, inputData, sizeof(message_data) - 1);
+        message_data[sizeof(message_data) - 1] = '\0'; // Ensure null termination
+
         dataReady = 0; // Reset flag after processing
+    } else {
+        message_data[0] = '\0'; // Return an empty string if no data is ready
     }
     pthread_mutex_unlock(&uart_mutex);
+    return message_data; // Return the received data as a string
 }
 
 int receive_uart_communication(uint8_t* device, uint8_t* message, size_t buffer_size) {
