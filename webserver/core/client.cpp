@@ -72,15 +72,15 @@ void uart_init(uint8_t* device) {
 
          // Configure UART settings
         struct termios options;
-        tcgetattr(uart_fd, &options);
+        tcgetattr(global_uart_fd, &options);
     
         options.c_cflag = B9600 | CS8 | CLOCAL | CREAD; // Baud rate: 9600, 8 data bits, no parity, 1 stop bit
         options.c_iflag = IGNPAR;                      // Ignore framing errors
         options.c_oflag = 0;
         options.c_lflag = 0;                           // Non-canonical mode
         
-        tcflush(uart_fd, TCIFLUSH);                    // Flush the input buffer
-        tcsetattr(uart_fd, TCSANOW, &options);         // Apply the configuration
+        tcflush(global_uart_fd, TCIFLUSH);                    // Flush the input buffer
+        tcsetattr(global_uart_fd, TCSANOW, &options);         // Apply the configuration
 
         // Configure UART settings
         // struct termios options;
