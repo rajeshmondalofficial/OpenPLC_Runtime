@@ -104,8 +104,7 @@ int send_tcp_message(uint8_t *msg, size_t msg_size, int socket_id);
 int receive_tcp_message(uint8_t *msg_buffer, size_t buffer_size, int socket_id);
 int close_tcp_connection(int socket_id);
 int uart_send(uint8_t* message, uint8_t* device);
-int uart_listen(uint8_t* device, uint8_t* message, size_t buffer_size);
-
+char* uart_listen(uint8_t* device, uint8_t* message, size_t buffer_size);
 
 static void UART_SEND_init__(UART_SEND *data__, BOOL retain) {
   __INIT_VAR(data__->EN,__BOOL_LITERAL(TRUE),retain)
@@ -172,7 +171,18 @@ static void UART_RECEIVE_body__(UART_RECEIVE *data__) {
   IEC_STRING message = GetFbVar(MESSAGE);
   int baud_rate = GetFbVar(BAUD_RATE);
 
-  int bytes_received = uart_listen(device.body, message.body, STR_MAX_LEN);
+  char* recv_message = uart_listen(device.body, message.body, STR_MAX_LEN);
+
+  size_t data_len = strlen(recv_message);
+  if (data_len > 255) data_len = 255;
+
+  // Use dot operator if message is not a pointer
+  strncpy((char *)message.body, recv_message, data_len); // Copy data to body
+  message.body[data_len] = '\0';                     // Null-terminate
+  message.len = (uint8_t)data_len;       
+
+  printf("Receive Block: %s", recv_message);
+
   SetFbVar(MESSAGE, message);
 
   #undef GetFbVar
