@@ -171,8 +171,8 @@ int uart_listen(uint8_t* device, uint8_t* message, size_t buffer_size) {
         printf("Received UART Data: %s\n", inputData);
 
         // // Copy the content to the IEC STRING variable
-        // strncpy(message, inputData, 255); // Copy up to 255 characters
-        // message = '\0';           // Ensure null termination
+        strncpy(message, inputData, 255); // Copy up to 255 characters
+        message = '\0';           // Ensure null termination
         // // Set the IEC STRING length
         // message = (unsigned char)strlen(message);
         
