@@ -70,30 +70,42 @@ void uart_init(uint8_t* device) {
             log(log_msg);
         }
 
-        // Configure UART settings
+         // Configure UART settings
         struct termios options;
-        tcgetattr(global_uart_fd, &options);
+        tcgetattr(uart_fd, &options);
+    
+        options.c_cflag = B9600 | CS8 | CLOCAL | CREAD; // Baud rate: 9600, 8 data bits, no parity, 1 stop bit
+        options.c_iflag = IGNPAR;                      // Ignore framing errors
+        options.c_oflag = 0;
+        options.c_lflag = 0;                           // Non-canonical mode
+        
+        tcflush(uart_fd, TCIFLUSH);                    // Flush the input buffer
+        tcsetattr(uart_fd, TCSANOW, &options);         // Apply the configuration
 
-        // Input baud rate
-        cfsetispeed(&options, BAUD_RATE);
-        
-        // Output baud rate
-        cfsetospeed(&options, BAUD_RATE);
-        
-        // 8 data bits, 1 stop bit, no parity
-        options.c_cflag &= ~PARENB;
-        options.c_cflag &= ~CSTOPB;
-        options.c_cflag &= ~CSIZE;
-        options.c_cflag |= CS8;
-        
-        // Enable receiver and ignore modem control lines
-        options.c_cflag |= (CLOCAL | CREAD);
-        
-        // Set UART attributes
-        tcsetattr(global_uart_fd, TCSANOW, &options);
-        tcflush(global_uart_fd, TCIOFLUSH);
+        // Configure UART settings
+        // struct termios options;
+        // tcgetattr(global_uart_fd, &options);
 
-        fcntl(global_uart_fd, F_SETFL, 0);
+        // // Input baud rate
+        // cfsetispeed(&options, BAUD_RATE);
+        
+        // // Output baud rate
+        // cfsetospeed(&options, BAUD_RATE);
+        
+        // // 8 data bits, 1 stop bit, no parity
+        // options.c_cflag &= ~PARENB;
+        // options.c_cflag &= ~CSTOPB;
+        // options.c_cflag &= ~CSIZE;
+        // options.c_cflag |= CS8;
+        
+        // // Enable receiver and ignore modem control lines
+        // options.c_cflag |= (CLOCAL | CREAD);
+        
+        // // Set UART attributes
+        // tcsetattr(global_uart_fd, TCSANOW, &options);
+        // tcflush(global_uart_fd, TCIOFLUSH);
+
+        // fcntl(global_uart_fd, F_SETFL, 0);
         // Initialize the mutex
         pthread_mutex_init(&uart_mutex, NULL);
     }
