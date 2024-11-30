@@ -120,8 +120,6 @@ elif [ "$OPENPLC_PLATFORM" = "rpi" ]; then
     else
         g++ -std=gnu++11 -I ./lib -c Config0.c -lasiodnp3 -lasiopal -lopendnp3 -lopenpal -w
     fi
-    echo "Initialize UART"
-    python main.py
     if [ $? -ne 0 ]; then
         echo "Error compiling C files"
         echo "Compilation finished with errors!"
