@@ -136,8 +136,10 @@ static void UART_SEND_body__(UART_SEND *data__) {
   IEC_STRING message = GetFbVar(MSG);
   IEC_STRING device = GetFbVar(DEVICE);
   bool trigger = GetFbVar(TRIGGER);
-  int uart_socket = uart_send(message.body, device.body);
-  SetFbVar(SUCCESS, uart_socket);
+  if(trigger) {
+    int uart_socket = uart_send(message.body, device.body);
+    SetFbVar(SUCCESS, uart_socket);
+  }
 
   #undef GetFbVar
   #undef SetFbVar
