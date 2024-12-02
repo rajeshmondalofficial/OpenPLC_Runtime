@@ -74,6 +74,7 @@ typedef struct {
   __DECLARE_VAR(STRING, MSG)
   __DECLARE_VAR(STRING, DEVICE)
   __DECLARE_VAR(INT, SUCCESS)
+  __DECLARE_VAR(BOOL, TRIGGER)
   // FB private variables - TEMP, private and located variables
 } UART_SEND;
 
