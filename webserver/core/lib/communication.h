@@ -111,6 +111,7 @@ static void UART_SEND_init__(UART_SEND *data__, BOOL retain) {
   __INIT_VAR(data__->EN,__BOOL_LITERAL(TRUE),retain)
   __INIT_VAR(data__->ENO,__BOOL_LITERAL(TRUE),retain)
   __INIT_VAR(data__->BAUD_RATE, 9600, retain)
+  __INIT_VAR(data__->TRIGGER, __BOOL_LITERAL(TRUE), retain)
   __INIT_VAR(data__->MSG,__STRING_LITERAL(0, ""),retain)
   __INIT_VAR(data__->DEVICE,__STRING_LITERAL(0, ""),retain)
   __INIT_VAR(data__->SUCCESS,0, retain)
