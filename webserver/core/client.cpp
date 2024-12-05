@@ -114,12 +114,13 @@ void uart_init(uint8_t* device) {
 /** UART Communication Block */
 int uart_send(uint8_t* message, uint8_t* device) {
     char appendStr[] = "\r\n"; 
+    
     if(global_uart_fd < 0) {
         uart_init(device);
-        write(global_uart_fd, strcat(message, appendStr), strlen(message));
+        write(global_uart_fd, strcat(message, appendStr), strlen(strcat(message, appendStr)));
         return global_uart_fd;
     } else {
-        write(global_uart_fd, strcat(message, appendStr), strlen(message));
+        write(global_uart_fd, strcat(message, appendStr), strlen(strcat(message, appendStr)));
         return global_uart_fd;
     }
 }
