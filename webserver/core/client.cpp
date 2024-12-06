@@ -79,7 +79,7 @@ void uart_init(uint8_t* device) {
         options.c_oflag = 0;
         options.c_lflag = 0;                           // Non-canonical mode
         
-        tcflush(global_uart_fd, TCIFLUSH);                    // Flush the input buffer
+        tcflush(global_uart_fd, TCIOFLUSH);                    // Flush the input buffer
         tcsetattr(global_uart_fd, TCSANOW, &options);         // Apply the configuration
 
         // Configure UART settings
