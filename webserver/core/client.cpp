@@ -137,8 +137,8 @@ void *uart_listener_thread(void *arg) {
             // Lock the mutex to update shared data
             pthread_mutex_lock(&uart_mutex);
             strncpy(inputData, buffer, sizeof(inputData) - 1);
-            // sprintf(log_msg, "UART: Connection Receive: => %s\n", inputData);
-            // log(log_msg);
+            sprintf(log_msg, "UART: Connection Receive: => %s\n", inputData);
+            log(log_msg);
             inputData[sizeof(inputData) - 1] = '\0'; // Safety null-termination
             dataReady = 1; // Set flag to indicate data is ready
             pthread_mutex_unlock(&uart_mutex);
