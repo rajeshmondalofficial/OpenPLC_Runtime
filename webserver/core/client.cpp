@@ -61,7 +61,7 @@ char log_msg[1000];
 void uart_init(uint8_t* device) {
     if(global_uart_fd < 0) {
         // Initialize UART Connection
-        global_uart_fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+        global_uart_fd = open(device, O_RDWR | O_NOCTTY);
         sprintf(log_msg, "UART: Connection Initialize: => %d\n", global_uart_fd);
         log(log_msg);
         if (global_uart_fd < 0) {
@@ -113,14 +113,16 @@ void uart_init(uint8_t* device) {
 
 /** UART Communication Block */
 int uart_send(uint8_t* message, uint8_t* device) {
-    char appendStr[] = "\r\n"; 
+    char termination[] = {0x0D, 0x0A};
     
     if(global_uart_fd < 0) {
         uart_init(device);
-        write(global_uart_fd, strcat(message, appendStr), strlen(strcat(message, appendStr)));
+        write(global_uart_fd, message, strlen(message));
+        write(global_uart_fd, termination, strlen(termination));
         return global_uart_fd;
     } else {
-        write(global_uart_fd, strcat(message, appendStr), strlen(strcat(message, appendStr)));
+        write(global_uart_fd, message, strlen(message));
+        write(global_uart_fd, termination, strlen(termination));
         return global_uart_fd;
     }
 }
@@ -130,15 +132,13 @@ void *uart_listener_thread(void *arg) {
     char buffer[256];
     while (1) {
         int bytes_read = read(global_uart_fd, buffer, sizeof(buffer) - 1);
-        sprintf(log_msg, "UART: Connection Receive: => %d\n", bytes_read);
-        log(log_msg);
         if (bytes_read > 0) {
             buffer[bytes_read] = '\0'; // Null-terminate the received string
             // Lock the mutex to update shared data
             pthread_mutex_lock(&uart_mutex);
             strncpy(inputData, buffer, sizeof(inputData) - 1);
-            sprintf(log_msg, "UART: Connection Receive: => %s\n", inputData);
-            log(log_msg);
+            // sprintf(log_msg, "UART: Connection Receive: => %s\n", inputData);
+            // log(log_msg);
             inputData[sizeof(inputData) - 1] = '\0'; // Safety null-termination
             dataReady = 1; // Set flag to indicate data is ready
             pthread_mutex_unlock(&uart_mutex);
@@ -152,7 +152,7 @@ void *uart_listener_thread(void *arg) {
 void start_uart_thread() {
     pthread_t thread_id;
     if (pthread_create(&thread_id, NULL, uart_listener_thread, NULL) != 0) {
-        perror("Failed to create UART listener thread");
+        perror("Failed to create UWslART listener thread");
         uart_listening = -1;
     } else {
         uart_listening = 0; // Set flag to indicate UART listening
@@ -320,6 +320,7 @@ int close_tcp_connection(int socket_id)
 {
     return close(socket_id);
 }
+
 
 
 
