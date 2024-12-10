@@ -118,15 +118,15 @@ int uart_send(uint8_t* message, uint8_t* device) {
     if(global_uart_fd < 0) {
         uart_init(device);
         int write_id = write(global_uart_fd, message, strlen(message));
-        // write(global_uart_fd, termination, strlen(termination));
-        sprintf(log_msg, "UART: Write to connection: => %s\n", inputData);
-        log(log_msg);
+        write(global_uart_fd, termination, strlen(termination));
+        // sprintf(log_msg, "UART: Write to connection: => %s\n", inputData);
+        // log(log_msg);
         return global_uart_fd;
     } else {
         int write_id = write(global_uart_fd, message, strlen(message));
-        // write(global_uart_fd, termination, strlen(termination));
-        sprintf(log_msg, "UART: Write to connection: => %s\n", inputData);
-        log(log_msg);
+        write(global_uart_fd, termination, strlen(termination));
+        // sprintf(log_msg, "UART: Write to connection: => %s\n", inputData);
+        // log(log_msg);
         return global_uart_fd;
     }
 }
