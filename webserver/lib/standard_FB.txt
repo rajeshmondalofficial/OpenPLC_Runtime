@@ -44,6 +44,7 @@
 (* Not in the standard, but useful nonetheless. *)
 {#include "sema.txt" }
 {#include "communication_blocks.txt" }
+{#include "Modem_blocks.txt" }
 {#include "sm_cards.txt" }
 {#include "SL-RP4.txt" }
 
