@@ -56,6 +56,9 @@ unsigned char dataReady = 0;    // Flag for new data
 int uart_listening = -1; // Flag for listening UART
 char log_msg[1000];
 
+// RYLR998 Modem Specific Variables
+int mode_connection_id = -1;
+
 
 // UART Initialize
 void uart_init(uint8_t* device) {
@@ -140,7 +143,7 @@ void *uart_listener_thread(void *arg) {
             buffer[bytes_read] = '\0'; // Null-terminate the received string
             // Lock the mutex to update shared data
             pthread_mutex_lock(&uart_mutex);
-            strcat(inputData, buffer);
+            strncpy(inputData, buffer, sizeof(inputData) - 1);
             // sprintf(log_msg, "UART: Connection Receive: => %s\n", inputData);
             // log(log_msg);
             inputData[sizeof(inputData) - 1] = '\0'; // Safety null-termination
@@ -326,6 +329,54 @@ int close_tcp_connection(int socket_id)
 }
 
 
+
+// Codes for Lyra998 Modem Specific Code Blocks
+// Get UART Connection for 
+int get_uart_connection(uint8_t *device, int baud_rate) {
+    if(mode_connection_id < 0) {
+        mode_connection_id = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+        // Configure UART settings
+        struct termios options;
+        tcgetattr(global_uart_fd, &options);
+    
+        options.c_cflag = B9600 | CS8 | CLOCAL | CREAD; // Baud rate: 9600, 8 data bits, no parity, 1 stop bit
+        options.c_iflag = IGNPAR;                      // Ignore framing errors
+        options.c_oflag = 0;
+        options.c_lflag = 0;                           // Non-canonical mode
+        
+        tcflush(global_uart_fd, TCIOFLUSH);                    // Flush the input buffer
+        tcsetattr(global_uart_fd, TCSANOW, &options); 
+
+        pthread_mutex_init(&uart_mutex, NULL);
+
+        return mode_connection_id;
+    }
+    return mode_connection_id;
+}
+
+// RYLR Configuration Block
+int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
+    int connection_id = get_uart_connection(device, baud_rate);
+    if(connection_id < 0) {
+        return 0;
+    }
+    char termination[] = {0x0D, 0x0A};
+    char at_command[] = "AT+BAND=";
+    char message[256];
+    strcat(at_command, frequency);
+
+    int byte_write = write(connection_id, at_command, strlen(at_command));
+    write(connection_id, termination, strlen(termination));
+
+    int byte_read = read(connection_id, message, sizeof(message) - 1);
+    message[bytes_read] = '\0';
+    
+    if(byte_read > 0) {
+        sprintf(log_msg, "RYLR998: Configuration Success: => %s\n", message);
+        log(log_msg);
+        return 1;
+    }
+}
 
 
 
