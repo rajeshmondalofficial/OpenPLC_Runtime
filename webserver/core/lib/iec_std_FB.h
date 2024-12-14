@@ -1886,6 +1886,7 @@ __end:
 
 
 #include "communication.h"
+#include "modem.h"
 #if defined(SEQUENT)
     #include "sm_cards.h"
 #endif
