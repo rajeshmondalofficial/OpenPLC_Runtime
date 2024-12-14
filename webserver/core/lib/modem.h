@@ -74,8 +74,8 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
   int baud_rate = GetFbVar(BAUD_RATE);
   IEC_STRING device = GetFbVar(DEVICE);
   int frequency = GetFbVar(FREQUENCY);
-  int config_response = rylr998_config(device.body, baud_rate, frequency);
-  SetFbVar(SUCCESS, config_response);
+  // int config_response = rylr998_config(device.body, baud_rate, frequency);
+  // SetFbVar(SUCCESS, config_response);
   
 
   #undef GetFbVar
