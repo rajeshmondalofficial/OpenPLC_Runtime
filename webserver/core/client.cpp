@@ -369,7 +369,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     write(connection_id, termination, strlen(termination));
 
     int byte_read = read(connection_id, message, sizeof(message) - 1);
-    message[bytes_read] = '\0';
+    message[byte_read] = '\0';
     
     if(byte_read > 0) {
         sprintf(log_msg, "RYLR998: Configuration Success: => %s\n", message);
