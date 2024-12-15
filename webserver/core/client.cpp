@@ -356,26 +356,27 @@ int get_uart_connection(uint8_t *device, int baud_rate) {
 
 // RYLR Configuration Block
 int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
-    int connection_id = get_uart_connection(device, baud_rate);
-    if(connection_id < 0) {
-        return 0;
-    }
-    char termination[] = {0x0D, 0x0A};
-    char at_command[] = "AT+BAND=";
-    char message[256];
-    strcat(at_command, frequency);
+    // int connection_id = get_uart_connection(device, baud_rate);
+    // if(connection_id < 0) {
+    //     return 0;
+    // }
+    // char termination[] = {0x0D, 0x0A};
+    // char at_command[] = "AT+BAND=";
+    // char message[256];
+    // strcat(at_command, frequency);
 
-    int byte_write = write(connection_id, at_command, strlen(at_command));
-    write(connection_id, termination, strlen(termination));
+    // int byte_write = write(connection_id, at_command, strlen(at_command));
+    // write(connection_id, termination, strlen(termination));
 
-    int byte_read = read(connection_id, message, sizeof(message) - 1);
-    message[byte_read] = '\0';
+    // int byte_read = read(connection_id, message, sizeof(message) - 1);
+    // message[byte_read] = '\0';
     
-    if(byte_read > 0) {
-        sprintf(log_msg, "RYLR998: Configuration Success: => %s\n", message);
-        log(log_msg);
-        return 1;
-    }
+    // if(byte_read > 0) {
+    //     sprintf(log_msg, "RYLR998: Configuration Success: => %s\n", message);
+    //     log(log_msg);
+    //     return 1;
+    // }
+    return 0;
 }
 
 
