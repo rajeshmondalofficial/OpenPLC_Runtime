@@ -362,7 +362,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     }
     char termination[] = {0x0D, 0x0A};
     char at_command[] = "AT+BAND=";
-    char message[256];
+    char message[256] = "Hello, world!";
     char msg_buffer[256];
     char numStr[32]; 
     char log_msg[1024];
@@ -376,7 +376,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
 
     int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
     // strncpy(message, msg_buffer, sizeof(message) - 1);
-    message = "Hello";
+    
     
     if(byte_read > 0) {
         message[byte_read] = '\0';
