@@ -364,6 +364,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     char at_command[] = "AT+BAND=";
     char message[256];
     char numStr[32]; 
+    char log_msg[1024];
 
     // Convert the integer to a string
     sprintf(numStr, "%d", frequency);
@@ -376,6 +377,8 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     
     if(byte_read > 0) {
         message[byte_read] = '\0';
+        sprintf(log_msg, "RYLR998: Received => %s\n", message);
+        log(log_msg);
         return connection_id;
     }
     return connection_id;
