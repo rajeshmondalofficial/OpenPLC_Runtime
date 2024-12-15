@@ -366,18 +366,18 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     char numStr[32]; 
     // Convert the integer to a string
     sprintf(numStr, "%d", frequency);
-
     strcat(at_command, numStr);
 
     int byte_write = write(connection_id, at_command, strlen(at_command));
     write(connection_id, termination, strlen(termination));
 
     int byte_read = read(connection_id, message, sizeof(message) - 1);
-    message[byte_read] = '\0';
+    
     
     if(byte_read > 0) {
-        sprintf(log_msg, "RYLR998: Configuration Success: => %s\n", message);
-        log(log_msg);
+        message[byte_read] = '\0';
+        // sprintf(log_msg, "RYLR998: Configuration Success: => %s\n", message);
+        log("RYLR998: Configuration Success: => %s\n", message);
         return 1;
     }
     return 0;
