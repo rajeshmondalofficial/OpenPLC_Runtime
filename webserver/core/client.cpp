@@ -363,6 +363,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     char termination[] = {0x0D, 0x0A};
     char at_command[] = "AT+BAND=";
     char message[256];
+    char msg_buffer[256];
     char numStr[32]; 
     char log_msg[1024];
 
@@ -373,11 +374,12 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     int byte_write = write(connection_id, at_command, strlen(at_command));
     write(connection_id, termination, strlen(termination));
 
-    int byte_read = read(connection_id, message, sizeof(message) - 1);
+    int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
+    strncpy(message, msg_buffer, sizeof(message) - 1);
     
     if(byte_read > 0) {
         message[byte_read] = '\0';
-        sprintf(log_msg, "RYLR998: Received Bytes => %d\n", byte_read);
+        sprintf(log_msg, "RYLR998: Received Bytes => %s\n", message);
         log(log_msg);
         return connection_id;
     }
