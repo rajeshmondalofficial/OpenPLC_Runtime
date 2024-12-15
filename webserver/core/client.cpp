@@ -356,7 +356,7 @@ int get_uart_connection(uint8_t *device, int baud_rate) {
 
 // RYLR Configuration Block
 int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
-    // int connection_id = get_uart_connection(device, baud_rate);
+    int connection_id = get_uart_connection(device, baud_rate);
     // if(connection_id < 0) {
     //     return 0;
     // }
@@ -376,7 +376,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     //     log(log_msg);
     //     return 1;
     // }
-    return 0;
+    return connection_id;
 }
 
 
