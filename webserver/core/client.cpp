@@ -363,7 +363,11 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     char termination[] = {0x0D, 0x0A};
     char at_command[] = "AT+BAND=";
     char message[256];
-    // strcat(at_command, frequency);
+    char numStr[32]; 
+    // Convert the integer to a string
+    sprintf(numStr, "%d", frequency);
+
+    strcat(at_command, numStr);
 
     int byte_write = write(connection_id, at_command, strlen(at_command));
     write(connection_id, termination, strlen(termination));
