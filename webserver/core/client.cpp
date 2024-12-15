@@ -382,9 +382,9 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
         message[byte_read] = '\0';
         sprintf(log_msg, "RYLR998: Configuration Success: => %s\n", message);
         log(log_msg);
-        return 1;
+        return connection_id;
     }
-    return 0;
+    return connection_id;
 }
 
 
