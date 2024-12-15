@@ -375,7 +375,8 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     write(connection_id, termination, strlen(termination));
 
     int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
-    strncpy(message, msg_buffer, sizeof(message) - 1);
+    // strncpy(message, msg_buffer, sizeof(message) - 1);
+    message = "Hello";
     
     if(byte_read > 0) {
         message[byte_read] = '\0';
