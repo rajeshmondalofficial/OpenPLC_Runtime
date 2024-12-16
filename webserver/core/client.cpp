@@ -51,6 +51,7 @@ int bytes_received;
 // Global Variables
 int global_uart_fd = -1;
 unsigned char inputData[256];
+unsigned char rylr_config_resp[256];
 pthread_mutex_t uart_mutex;  // Mutex for thread-safe access
 unsigned char dataReady = 0;    // Flag for new data
 int uart_listening = -1; // Flag for listening UART
@@ -362,7 +363,6 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     }
     char termination[] = {0x0D, 0x0A};
     char at_command[] = "AT+ADDRESS=";
-    char message[256] = "";
     char msg_buffer[256];
     char numStr[32]; 
     char log_msg[1024];
@@ -375,12 +375,12 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     write(connection_id, termination, strlen(termination));
 
     int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
-    strncpy(message, msg_buffer, sizeof(message) - 1);
+    strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
     
     
     if(byte_read > 0) {
         message[byte_read] = '\0';
-        sprintf(log_msg, "RYLR: Received Bytes => %d\n", byte_read);
+        sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_config_resp);
         log(log_msg);
         return connection_id;
     }
