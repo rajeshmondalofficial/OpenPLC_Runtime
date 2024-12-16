@@ -361,7 +361,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
         return 0;
     }
     char termination[] = {0x0D, 0x0A};
-    char at_command[] = "AT+BAND=";
+    char at_command[] = "AT+ADDRESS=";
     char message[256] = "";
     char msg_buffer[256];
     char numStr[32]; 
