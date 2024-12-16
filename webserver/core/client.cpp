@@ -379,7 +379,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     
     
     if(byte_read > 0) {
-        message[byte_read] = '\0';
+        msg_buffer[byte_read] = '\0';
         sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_config_resp);
         log(log_msg);
         return connection_id;
