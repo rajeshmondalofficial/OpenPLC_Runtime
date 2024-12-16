@@ -362,15 +362,15 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
         return 0;
     }
     char termination[] = {0x0D, 0x0A};
-    char at_command[] = "AT+ADDRESS=";
+    char at_command[] = "AT+ADDRESS=23";
     char msg_buffer[256];
     char numStr[32]; 
     char log_msg[1024];
 
     // Convert the integer to a string
     sprintf(numStr, "%d", frequency);
-    strcat(at_command, numStr);
-    strcat(at_command, termination);
+    // strcat(at_command, numStr);
+    // strcat(at_command, termination);
 
     int byte_write = write(connection_id, at_command, strlen(at_command));
     sprintf(log_msg, "RYLR: Write AT Command => %s\n", at_command);
