@@ -370,11 +370,12 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     // Convert the integer to a string
     sprintf(numStr, "%d", frequency);
     strcat(at_command, numStr);
+    strcat(at_command, termination);
 
     int byte_write = write(connection_id, at_command, strlen(at_command));
     sprintf(log_msg, "RYLR: Write AT Command => %s\n", at_command);
     log(log_msg);
-    write(connection_id, termination, strlen(termination));
+    // write(connection_id, termination, strlen(termination));
 
     int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
     strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
