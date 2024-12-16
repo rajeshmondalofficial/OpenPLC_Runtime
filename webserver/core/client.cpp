@@ -369,7 +369,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     char log_msg[1024];
 
     // Convert the integer to a string
-    sprintf(at_command, "AT+ADDRESS=%d\r\n", frequency);
+    sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
     // strcat(at_command, numStr);
     // strcat(at_command, termination);
 
