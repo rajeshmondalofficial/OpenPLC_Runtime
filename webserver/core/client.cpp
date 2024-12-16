@@ -362,13 +362,14 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
         return 0;
     }
     char termination[] = {0x0D, 0x0A};
-    char at_command[] = "AT+ADDRESS=19\r\n";
+    // char at_command[256] = "AT+ADDRESS=19\r\n";
+    char at_command[256];
     char msg_buffer[256];
     char numStr[32]; 
     char log_msg[1024];
 
     // Convert the integer to a string
-    sprintf(numStr, "%d", frequency);
+    sprintf(at_command, "AT+ADDRESS=%d\r\n", frequency);
     // strcat(at_command, numStr);
     // strcat(at_command, termination);
 
