@@ -13,6 +13,7 @@ typedef struct
   __DECLARE_VAR(INT, FREQUENCY)
   __DECLARE_VAR(INT, BAUD_RATE)
   __DECLARE_VAR(INT, SUCCESS)
+  __DECLARE_VAR(BOOL, TRIGGER)
 } RYLR998_CONFIG;
 
 
@@ -53,6 +54,7 @@ static void RYLR998_CONFIG_init__(RYLR998_CONFIG *data__, BOOL retain)
   __INIT_VAR(data__->FREQUENCY, 9600, retain)
   __INIT_VAR(data__->BAUD_RATE, 0, retain)
   __INIT_VAR(data__->SUCCESS, 0, retain)
+  __INIT_VAR(data__->TRIGGER, __BOOL_LITERAL(FALSE), retain)
 }
 
 static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
@@ -74,8 +76,12 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
   int baud_rate = GetFbVar(BAUD_RATE);
   IEC_STRING device = GetFbVar(DEVICE);
   int frequency = GetFbVar(FREQUENCY);
-  int config_response = rylr998_config(device.body, baud_rate, frequency);
-  SetFbVar(SUCCESS, config_response);
+  bool trigger = GetFbVar(TRIGGER);
+  if(trigger) {
+    int config_response = rylr998_config(device.body, baud_rate, frequency);
+    SetFbVar(SUCCESS, config_response);
+  }
+  
   
 
   #undef GetFbVar
