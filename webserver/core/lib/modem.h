@@ -38,8 +38,9 @@ typedef struct
 {
   __DECLARE_VAR(BOOL, EN)
   __DECLARE_VAR(BOOL, ENO)
-  __DECLARE_VAR(STRING, DEVICE)
-  __DECLARE_VAR(BOOL, RECEIVE)
+  __DECLARE_VAR(INT, CONNECTION_ID)
+  __DECLARE_VAR(STRING, ADDRESS)
+  __DECLARE_VAR(STRING, LENGTH)
   __DECLARE_VAR(INT, BYTES_RECEIVED)
   __DECLARE_VAR(STRING, MESSAGE)
 } RYLR998_RECEIVE;
@@ -131,8 +132,9 @@ static void RYLR998_RECEIVE_init__(RYLR998_RECEIVE *data__, BOOL retain)
 {
   __INIT_VAR(data__->EN, __BOOL_LITERAL(TRUE), retain)
   __INIT_VAR(data__->ENO, __BOOL_LITERAL(TRUE), retain)
-  __INIT_VAR(data__->DEVICE, __STRING_LITERAL(0, ""), retain)
-  __INIT_VAR(data__->RECEIVE, __BOOL_LITERAL(FALSE), retain)
+  __INIT_VAR(data__->CONNECTION_ID, 0, retain)
+  __INIT_VAR(data__->ADDRESS, __STRING_LITERAL(0, ""), retain)
+  __INIT_VAR(data__->LENGTH, __STRING_LITERAL(0, ""), retain)
   __INIT_VAR(data__->BYTES_RECEIVED, 0, retain)
   __INIT_VAR(data__->MESSAGE, __STRING_LITERAL(0, ""), retain)
 }

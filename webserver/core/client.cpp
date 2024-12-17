@@ -409,15 +409,15 @@ void rylr_receive() {
         struct timeval timeout;
 
         FD_ZERO(&read_fds);
-        FD_SET(uart_fd, &read_fds);
+        FD_SET(connection_id, &read_fds);
 
         timeout.tv_sec = 5;  // Timeout of 2 seconds
         timeout.tv_usec = 0;
 
-        if (select(uart_fd + 1, &read_fds, NULL, NULL, &timeout) > 0) {
-            if (FD_ISSET(uart_fd, &read_fds)) {
+        if (select(connection_id + 1, &read_fds, NULL, NULL, &timeout) > 0) {
+            if (FD_ISSET(connection_id, &read_fds)) {
                 char temp;
-                if (read(uart_fd, &temp, 1) > 0) {
+                if (read(connection_id, &temp, 1) > 0) {
                     if (temp == '\n') { // End of packet
                         buffer[index] = '\0';
                         sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
