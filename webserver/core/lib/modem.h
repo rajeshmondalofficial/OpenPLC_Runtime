@@ -16,7 +16,6 @@ typedef struct
   __DECLARE_VAR(BOOL, TRIGGER)
 } RYLR998_CONFIG;
 
-
 // RYLR998_SEND
 typedef struct
 {
@@ -35,7 +34,8 @@ typedef struct
 } RYLR998_SEND;
 
 // RYLR998_RECEIVE
-typedef struct {
+typedef struct
+{
   __DECLARE_VAR(BOOL, EN)
   __DECLARE_VAR(BOOL, ENO)
   __DECLARE_VAR(STRING, DEVICE)
@@ -45,6 +45,7 @@ typedef struct {
 } RYLR998_RECEIVE;
 
 int rylr998_config(uint8_t *device, int baud_rate, int frequency);
+void rylr_receive();
 
 static void RYLR998_CONFIG_init__(RYLR998_CONFIG *data__, BOOL retain)
 {
@@ -70,22 +71,21 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
     __SET_VAR(data__->, ENO, , __BOOL_LITERAL(TRUE));
   }
 
-  #define GetFbVar(var,...) __GET_VAR(data__->var,__VA_ARGS__)
-  #define SetFbVar(var,val,...) __SET_VAR(data__->,var,__VA_ARGS__,val)
+#define GetFbVar(var, ...) __GET_VAR(data__->var, __VA_ARGS__)
+#define SetFbVar(var, val, ...) __SET_VAR(data__->, var, __VA_ARGS__, val)
 
   int baud_rate = GetFbVar(BAUD_RATE);
   IEC_STRING device = GetFbVar(DEVICE);
   int frequency = GetFbVar(FREQUENCY);
   bool trigger = GetFbVar(TRIGGER);
-  if(trigger) {
+  if (trigger)
+  {
     int config_response = rylr998_config(device.body, baud_rate, frequency);
     SetFbVar(SUCCESS, config_response);
   }
-  
-  
 
-  #undef GetFbVar
-  #undef SetFbVar
+#undef GetFbVar
+#undef SetFbVar
 
   goto __end;
 
@@ -127,7 +127,8 @@ __end:
   return;
 }
 
-static void RYLR998_RECEIVE_init__(RYLR998_RECEIVE *data__, BOOL retain){
+static void RYLR998_RECEIVE_init__(RYLR998_RECEIVE *data__, BOOL retain)
+{
   __INIT_VAR(data__->EN, __BOOL_LITERAL(TRUE), retain)
   __INIT_VAR(data__->ENO, __BOOL_LITERAL(TRUE), retain)
   __INIT_VAR(data__->DEVICE, __STRING_LITERAL(0, ""), retain)
@@ -136,7 +137,8 @@ static void RYLR998_RECEIVE_init__(RYLR998_RECEIVE *data__, BOOL retain){
   __INIT_VAR(data__->MESSAGE, __STRING_LITERAL(0, ""), retain)
 }
 
-static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__){
+static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
+{
   // Control execution
   if (!__GET_VAR(data__->EN))
   {
@@ -147,6 +149,14 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__){
   {
     __SET_VAR(data__->, ENO, , __BOOL_LITERAL(TRUE));
   }
+
+#define GetFbVar(var, ...) __GET_VAR(data__->var, __VA_ARGS__)
+#define SetFbVar(var, val, ...) __SET_VAR(data__->, var, __VA_ARGS__, val)
+
+  rylr_receive();
+
+#undef GetFbVar
+#undef SetFbVar
 
   goto __end;
 
