@@ -34,6 +34,7 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <pthread.h>
+#include <sys/select.h>
 
 #include "ladder.h"
 
@@ -334,7 +335,7 @@ int close_tcp_connection(int socket_id)
 // Codes for Lyra998 Modem Specific Code Blocks
 // Get UART Connection for 
 int get_uart_connection(uint8_t *device, int baud_rate) {
-    // if(mode_connection_id < 0) {
+    if(mode_connection_id < 0) {
         mode_connection_id = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
         // Configure UART settings
         struct termios options;
@@ -351,8 +352,8 @@ int get_uart_connection(uint8_t *device, int baud_rate) {
         pthread_mutex_init(&uart_mutex, NULL);
 
         return mode_connection_id;
-   // }
-   // return mode_connection_id;
+    }
+    return mode_connection_id;
 }
 
 // RYLR Configuration Block
@@ -398,6 +399,40 @@ void rylr_receive() {
     if(connection_id < 0) {
         log("Couldn't get connection");
         return;
+    }
+
+    char buffer[BUFFER_SIZE];
+    int index = 0;
+
+    while (1) {
+        fd_set read_fds;
+        struct timeval timeout;
+
+        FD_ZERO(&read_fds);
+        FD_SET(uart_fd, &read_fds);
+
+        timeout.tv_sec = 5;  // Timeout of 2 seconds
+        timeout.tv_usec = 0;
+
+        if (select(uart_fd + 1, &read_fds, NULL, NULL, &timeout) > 0) {
+            if (FD_ISSET(uart_fd, &read_fds)) {
+                char temp;
+                if (read(uart_fd, &temp, 1) > 0) {
+                    if (temp == '\n') { // End of packet
+                        buffer[index] = '\0';
+                        sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
+                        log(log_msg);
+                        // printf("Received packet: %s\n", buffer);
+                        index = 0;
+                    } else if (index < BUFFER_SIZE - 1) {
+                        buffer[index++] = temp;
+                    }
+                }
+            }
+        } else {
+            log("No data received within timeout\n");
+            printf("No data received within timeout\n");
+        }
     }
 } 
 
