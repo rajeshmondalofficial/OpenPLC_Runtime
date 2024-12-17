@@ -334,7 +334,7 @@ int close_tcp_connection(int socket_id)
 // Codes for Lyra998 Modem Specific Code Blocks
 // Get UART Connection for 
 int get_uart_connection(uint8_t *device, int baud_rate) {
-    if(mode_connection_id < 0) {
+    // if(mode_connection_id < 0) {
         mode_connection_id = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
         // Configure UART settings
         struct termios options;
@@ -351,8 +351,8 @@ int get_uart_connection(uint8_t *device, int baud_rate) {
         pthread_mutex_init(&uart_mutex, NULL);
 
         return mode_connection_id;
-    }
-    return mode_connection_id;
+   // }
+   // return mode_connection_id;
 }
 
 // RYLR Configuration Block
