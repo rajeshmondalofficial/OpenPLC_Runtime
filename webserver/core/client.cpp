@@ -392,10 +392,14 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency) {
     return connection_id;
 }
 
-
-
-
-
+// RYLR Received Block
+void rylr_receive() {
+    int connection_id = get_uart_connection(device, baud_rate);
+    if(connection_id < 0) {
+        log("Couldn't get connection");
+        return;
+    }
+} 
 
 
 
