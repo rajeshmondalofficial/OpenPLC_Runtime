@@ -470,7 +470,7 @@ void rylr_receive()
                 log("No data received within timeout\n");
                 printf("No data received within timeout\n");
             }
-            uart_listening = 1
+            uart_listening = 1;
         }
     }
 }
