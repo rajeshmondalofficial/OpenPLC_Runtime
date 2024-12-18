@@ -411,7 +411,7 @@ void rylr_receive() {
         FD_ZERO(&read_fds);
         FD_SET(connection_id, &read_fds);
 
-        timeout.tv_sec = 20;  // Timeout of 2 seconds
+        timeout.tv_sec = 15;  // Timeout of 2 seconds
         timeout.tv_usec = 0;
 
         if (select(connection_id + 1, &read_fds, NULL, NULL, &timeout) > 0) {
