@@ -433,6 +433,8 @@ void rylr_receive()
 
     if (uart_listening < 0)
     {
+        sprintf(log_msg, "RYLR: Received Should Listen => %d\n", should_listen);
+        log(log_msg);
         while (should_listen > 0)
         {
             fd_set read_fds;
