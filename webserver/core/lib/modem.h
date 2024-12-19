@@ -22,15 +22,13 @@ typedef struct
   // FB Interface - IN, OUT, IN_OUT variables
   __DECLARE_VAR(BOOL, EN)
   __DECLARE_VAR(BOOL, ENO)
-  __DECLARE_VAR(BOOL, SEND)
-  __DECLARE_VAR(STRING, DEVICE)
-  __DECLARE_VAR(STRING, MSG)
-  __DECLARE_VAR(STRING, SEND_COMMENT)
-  __DECLARE_VAR(INT, SUCCESS_ID)
-  __DECLARE_VAR(STRING, ADDRESS)
-  __DECLARE_VAR(INT, PAYLOAD_LENGTH)
+  __DECLARE_VAR(BOOL, TRIGGER)
+  __DECLARE_VAR(INT, CONNECTION_ID)
+  __DECLARE_VAR(INT, ADDRESS)
   __DECLARE_VAR(STRING, PAYLOAD_DATA)
   __DECLARE_VAR(INT, BYTES_SENT)
+  __DECLARE_VAR(BOOL, SUCCESS)
+  __DECLARE_VAR(STRING, RESPONSE)
 } RYLR998_SEND;
 
 // RYLR998_RECEIVE
@@ -98,15 +96,13 @@ static void RYLR998_SEND_init__(RYLR998_SEND *data__, BOOL retain)
 {
   __INIT_VAR(data__->EN, __BOOL_LITERAL(TRUE), retain)
   __INIT_VAR(data__->ENO, __BOOL_LITERAL(TRUE), retain)
-  __INIT_VAR(data__->SEND, __BOOL_LITERAL(FALSE), retain)
-  __INIT_VAR(data__->DEVICE, __STRING_LITERAL(0, ""), retain)
-  __INIT_VAR(data__->MSG, __STRING_LITERAL(0, ""), retain)
-  __INIT_VAR(data__->SEND_COMMENT, __STRING_LITERAL(0, ""), retain)
-  __INIT_VAR(data__->SUCCESS_ID, 0, retain)
-  __INIT_VAR(data__->ADDRESS, __STRING_LITERAL(0, ""), retain)
-  __INIT_VAR(data__->PAYLOAD_LENGTH, 0, retain)
+  __INIT_VAR(data__->CONNECTION_ID, 0, retain)
+  __INIT_VAR(data__->TRIGGER, __BOOL_LITERAL(FALSE), retain)
+  __INIT_VAR(data__->ADDRESS, 0, retain)
   __INIT_VAR(data__->PAYLOAD_DATA, __STRING_LITERAL(0, ""), retain)
   __INIT_VAR(data__->BYTES_SENT, 0, retain)
+  __INIT_VAR(data__->SUCCESS, __BOOL_LITERAL(FALSE), retain)
+  __INIT_VAR(data__->RESPONSE, __STRING_LITERAL(0, ""), retain)
 }
 
 static void RYLR998_SEND_body__(RYLR998_SEND *data__)
