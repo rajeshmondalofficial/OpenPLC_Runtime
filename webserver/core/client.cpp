@@ -459,7 +459,7 @@ void rylr_receive()
                             // printf("Received packet: %s\n", buffer);
                             index = 0;
                             should_listen = -1;
-                            uart_listening = -1:
+                            uart_listening = -1;
                         }
                         else if (index < BUFFER_SIZE - 1)
                         {
