@@ -429,11 +429,14 @@ void rylr_receive()
 
     char buffer[BUFFER_SIZE];
     int index = 0;
+    int should_listen = 1;
 
-    if (uart_listening < 0)
-    {
-        while (1)
-        {
+   // if (uart_listening < 0)
+   // {
+        sprintf(log_msg, "RYLR: Received Should Listen => %d\n", should_listen);
+        log(log_msg);
+       // while (should_listen > 0)
+      //  {
             fd_set read_fds;
             struct timeval timeout;
 
@@ -457,6 +460,8 @@ void rylr_receive()
                             log(log_msg);
                             // printf("Received packet: %s\n", buffer);
                             index = 0;
+                            should_listen = -1;
+                            uart_listening = -1;
                         }
                         else if (index < BUFFER_SIZE - 1)
                         {
@@ -470,7 +475,7 @@ void rylr_receive()
                 log("No data received within timeout\n");
                 printf("No data received within timeout\n");
             }
-            uart_listening = 1
-        }
-    }
+            // uart_listening = 1;
+       // }
+   // }
 }
