@@ -429,10 +429,11 @@ void rylr_receive()
 
     char buffer[BUFFER_SIZE];
     int index = 0;
+    int should_listen = 1;
 
     if (uart_listening < 0)
     {
-        while (1)
+        while (should_listen > 0)
         {
             fd_set read_fds;
             struct timeval timeout;
