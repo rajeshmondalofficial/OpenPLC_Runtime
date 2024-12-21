@@ -461,7 +461,7 @@ char* rylr_receive()
                             log(log_msg);
                             // printf("Received packet: %s\n", buffer);
                             index = 0;
-                            return buffer;
+                            // return buffer;
                                                 }
                         else if (index < BUFFER_SIZE - 1)
                         {
