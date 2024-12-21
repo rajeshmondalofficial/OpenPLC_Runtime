@@ -430,13 +430,9 @@ void rylr_receive()
 
     char buffer[BUFFER_SIZE];
     int index = 0;
-    
 
     if (uart_listening < 0)
     {
-        should_listen = 1;
-        sprintf(log_msg, "RYLR: Received Should Listen => %d\n", should_listen);
-        log(log_msg);
         while (should_listen > 0)
         {
             fd_set read_fds;
@@ -462,9 +458,7 @@ void rylr_receive()
                             log(log_msg);
                             // printf("Received packet: %s\n", buffer);
                             index = 0;
-                            should_listen = -1;
-                            uart_listening = -1;
-                        }
+                                                }
                         else if (index < BUFFER_SIZE - 1)
                         {
                             buffer[index++] = temp;
