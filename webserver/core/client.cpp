@@ -43,6 +43,8 @@
 #define UART_DEVICE "/dev/ttyAMA0"
 #define BAUD_RATE 9600
 
+#define BUFFER_SIZE 1024
+
 int fd = -1;
 int serial_fd = -1;
 int listening = 0;
@@ -409,6 +411,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency)
 
     if (byte_read > 0)
     {
+
         msg_buffer[byte_read] = '\0';
         sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_config_resp);
         log(log_msg);
@@ -419,7 +422,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency)
 }
 
 // RYLR Received Block
-void rylr_receive()
+char rylr_receive()
 {
     int connection_id = get_uart_connection(UART_DEVICE, 9600);
     if (connection_id < 0)
