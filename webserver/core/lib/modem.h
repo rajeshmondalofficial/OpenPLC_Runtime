@@ -44,8 +44,7 @@ typedef struct
 } RYLR998_RECEIVE;
 
 int rylr998_config(uint8_t *device, int baud_rate, int frequency);
-char* rylr_receive();
-
+void rylr_receive();
 
 static void RYLR998_CONFIG_init__(RYLR998_CONFIG *data__, BOOL retain)
 {
@@ -151,17 +150,9 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
 
 #define GetFbVar(var, ...) __GET_VAR(data__->var, __VA_ARGS__)
 #define SetFbVar(var, val, ...) __SET_VAR(data__->, var, __VA_ARGS__, val)
-IEC_STRING message = GetFbVar(MESSAGE);
+  IEC_STRING message = GetFbVar(MESSAGE);
 
-char *recv_message = rylr_receive();
-size_t data_len = strlen(recv_message);
-if (data_len > 255) data_len = 255;
-
-strncpy((char *)message.body, recv_message, data_len); // Copy data to body
-message.body[data_len] = '\0';                     // Null-terminate
-message.len = (uint8_t)data_len;  
-
-SetFbVar(MESSAGE, message);
+  rylr_receive();
 
 #undef GetFbVar
 #undef SetFbVar
