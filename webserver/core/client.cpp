@@ -47,6 +47,7 @@ int fd = -1;
 int serial_fd = -1;
 int listening = 0;
 int bytes_received;
+int should_listen = 1;
 
 // Global Variables
 int global_uart_fd = -1;
@@ -429,10 +430,11 @@ void rylr_receive()
 
     char buffer[BUFFER_SIZE];
     int index = 0;
-    int should_listen = 1;
+    
 
     if (uart_listening < 0)
     {
+        should_listen = 1;
         sprintf(log_msg, "RYLR: Received Should Listen => %d\n", should_listen);
         log(log_msg);
         while (should_listen > 0)
