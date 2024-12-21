@@ -422,7 +422,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency)
 }
 
 // RYLR Received Block
-char rylr_receive()
+char* rylr_receive()
 {
     int connection_id = get_uart_connection(UART_DEVICE, 9600);
     if (connection_id < 0)
@@ -461,6 +461,7 @@ char rylr_receive()
                             log(log_msg);
                             // printf("Received packet: %s\n", buffer);
                             index = 0;
+                            return buffer;
                                                 }
                         else if (index < BUFFER_SIZE - 1)
                         {
