@@ -44,7 +44,7 @@ typedef struct
 } RYLR998_RECEIVE;
 
 int rylr998_config(uint8_t *device, int baud_rate, int frequency);
-void rylr_receive(uint8_t *msg_buffer);
+void rylr_receive();
 
 static void RYLR998_CONFIG_init__(RYLR998_CONFIG *data__, BOOL retain)
 {
@@ -153,7 +153,6 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   IEC_STRING message = GetFbVar(MESSAGE);
 
   rylr_receive(message.body);
-  // SetFbVar(MESSAGE, message);
 
 #undef GetFbVar
 #undef SetFbVar

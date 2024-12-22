@@ -422,7 +422,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency)
 }
 
 // RYLR Received Block
-void rylr_receive(uint8_t *msg_buffer)
+void rylr_receive()
 {
     int connection_id = get_uart_connection(UART_DEVICE, 9600);
     if (connection_id < 0)
