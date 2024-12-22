@@ -422,7 +422,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency)
 }
 
 // RYLR Received Block
-void rylr_receive()
+void rylr_receive(uint8_t *msg_buffer)
 {
     int connection_id = get_uart_connection(UART_DEVICE, 9600);
     if (connection_id < 0)
@@ -436,7 +436,7 @@ void rylr_receive()
 
     if (uart_listening < 0)
     {
-        while (should_listen > 0)
+        while (1)
         {
             fd_set read_fds;
             struct timeval timeout;
@@ -460,9 +460,11 @@ void rylr_receive()
                             sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
                             log(log_msg);
                             // printf("Received packet: %s\n", buffer);
+                            strncpy(msg_buffer, buffer, sizeof(msg_buffer));
                             index = 0;
+                            
                             // return buffer;
-                                                }
+                        }
                         else if (index < BUFFER_SIZE - 1)
                         {
                             buffer[index++] = temp;
