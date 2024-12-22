@@ -459,12 +459,7 @@ void rylr_receive()
                             buffer[index] = '\0';
                             sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
                             log(log_msg);
-                            // printf("Received packet: %s\n", buffer);
-                            // strncpy(msg_buffer, buffer, sizeof(msg_buffer));
-                            // strncpy(msg_buffer, "Rajesh Mondal", 256);
                             index = 0;
-                            
-                            // return buffer;
                         }
                         else if (index < BUFFER_SIZE - 1)
                         {
