@@ -44,7 +44,7 @@ typedef struct
 } RYLR998_RECEIVE;
 
 int rylr998_config(uint8_t *device, int baud_rate, int frequency);
-void rylr_receive(char *buffer);
+void rylr_receive(uint8_t *buffer);
 
 static void RYLR998_CONFIG_init__(RYLR998_CONFIG *data__, BOOL retain)
 {
