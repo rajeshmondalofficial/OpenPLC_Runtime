@@ -43,7 +43,6 @@
 #define UART_DEVICE "/dev/ttyAMA0"
 #define BAUD_RATE 9600
 
-#define BUFFER_SIZE 1024
 
 int fd = -1;
 int serial_fd = -1;
