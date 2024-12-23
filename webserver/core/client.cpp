@@ -430,7 +430,7 @@ void rylr_receive()
         return;
     }
 
-    char buffer[BUFFER_SIZE];
+    char buffer[1024];
     int index = 0;
 
     if (uart_listening < 0)
