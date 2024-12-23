@@ -459,6 +459,7 @@ void rylr_receive()
                             sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
                             log(log_msg);
                             index = 0;
+                            uart_listening = -1;
                         }
                         else if (index < BUFFER_SIZE - 1)
                         {
