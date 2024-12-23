@@ -362,15 +362,15 @@ int get_uart_connection(uint8_t *device, int baud_rate)
         mode_connection_id = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
         // Configure UART settings
         struct termios options;
-        tcgetattr(global_uart_fd, &options);
+        tcgetattr(mode_connection_id, &options);
 
         options.c_cflag = B9600 | CS8 | CLOCAL | CREAD; // Baud rate: 9600, 8 data bits, no parity, 1 stop bit
         options.c_iflag = IGNPAR;                       // Ignore framing errors
         options.c_oflag = 0;
         options.c_lflag = 0; // Non-canonical mode
 
-        tcflush(global_uart_fd, TCIOFLUSH); // Flush the input buffer
-        tcsetattr(global_uart_fd, TCSANOW, &options);
+        tcflush(mode_connection_id, TCIOFLUSH); // Flush the input buffer
+        tcsetattr(mode_connection_id, TCSANOW, &options);
 
         pthread_mutex_init(&uart_mutex, NULL);
 
