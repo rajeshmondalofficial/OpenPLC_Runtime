@@ -152,7 +152,8 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
 #define SetFbVar(var, val, ...) __SET_VAR(data__->, var, __VA_ARGS__, val)
   IEC_STRING message = GetFbVar(MESSAGE);
 
-  rylr_receive();
+  rylr_receive(message.body);
+  SetFbVar(MESSAGE, message);
 
 #undef GetFbVar
 #undef SetFbVar
