@@ -43,7 +43,6 @@
 #define UART_DEVICE "/dev/ttyAMA0"
 #define BAUD_RATE 9600
 
-
 int fd = -1;
 int serial_fd = -1;
 int listening = 0;
@@ -432,48 +431,45 @@ void rylr_receive()
 
     char buffer[1024];
     int index = 0;
+    uart_listening = -1;
 
-    if (uart_listening < 0)
+    while (uart_listening < 0)
     {
-        while (1)
+        fd_set read_fds;
+        struct timeval timeout;
+
+        FD_ZERO(&read_fds);
+        FD_SET(connection_id, &read_fds);
+
+        timeout.tv_sec = 15; // Timeout of 2 seconds
+        timeout.tv_usec = 0;
+
+        if (select(connection_id + 1, &read_fds, NULL, NULL, &timeout) > 0)
         {
-            fd_set read_fds;
-            struct timeval timeout;
-
-            FD_ZERO(&read_fds);
-            FD_SET(connection_id, &read_fds);
-
-            timeout.tv_sec = 15; // Timeout of 2 seconds
-            timeout.tv_usec = 0;
-
-            if (select(connection_id + 1, &read_fds, NULL, NULL, &timeout) > 0)
+            if (FD_ISSET(connection_id, &read_fds))
             {
-                if (FD_ISSET(connection_id, &read_fds))
+                char temp;
+                if (read(connection_id, &temp, 1) > 0)
                 {
-                    char temp;
-                    if (read(connection_id, &temp, 1) > 0)
+                    if (temp == '\n')
+                    { // End of packet
+                        buffer[index] = '\0';
+                        sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
+                        log(log_msg);
+                        index = 0;
+                        uart_listening = 1;
+                    }
+                    else if (index < BUFFER_SIZE - 1)
                     {
-                        if (temp == '\n')
-                        { // End of packet
-                            buffer[index] = '\0';
-                            sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
-                            log(log_msg);
-                            index = 0;
-                            uart_listening = -1;
-                        }
-                        else if (index < BUFFER_SIZE - 1)
-                        {
-                            buffer[index++] = temp;
-                        }
+                        buffer[index++] = temp;
                     }
                 }
             }
-            else
-            {
-                log("No data received within timeout\n");
-                printf("No data received within timeout\n");
-            }
-            uart_listening = 1;
         }
-    }
+        else
+        {
+            log("No data received within timeout\n");
+            printf("No data received within timeout\n");
+        }
+        }
 }
