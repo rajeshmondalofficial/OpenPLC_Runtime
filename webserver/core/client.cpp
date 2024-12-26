@@ -419,21 +419,11 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency)
     return connection_id;
 }
 
-// RYLR Received Block
-void rylr_receive(uint8_t *recv_buffer)
+void listen_rylr_receive(int connection_id)
 {
-    int connection_id = get_uart_connection(UART_DEVICE, 9600);
-    if (connection_id < 0)
-    {
-        log("Couldn't get connection");
-        return;
-    }
-
     char buffer[1024];
     int index = 0;
-    uart_listening = -1;
-
-    while (uart_listening < 0)
+    while (1)
     {
         fd_set read_fds;
         struct timeval timeout;
@@ -457,7 +447,6 @@ void rylr_receive(uint8_t *recv_buffer)
                         sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
                         log(log_msg);
                         index = 0;
-                        uart_listening = 1;
                     }
                     else if (index < BUFFER_SIZE - 1)
                     {
@@ -471,5 +460,29 @@ void rylr_receive(uint8_t *recv_buffer)
             log("No data received within timeout\n");
             printf("No data received within timeout\n");
         }
+    }
+}
+// RYLR Received Block
+void rylr_receive(uint8_t *recv_buffer)
+{
+    pthread_t thread_id;
+    int connection_id = get_uart_connection(UART_DEVICE, 9600);
+    if (connection_id < 0)
+    {
+        log("Couldn't get connection");
+        return;
+    }
+
+    if (uart_listening < 0)
+    {
+        if (pthread_create(&thread_id, NULL, uart_listener_thread, connection_id) != 0)
+        {
+            perror("Failed to create UWslART listener thread");
+            uart_listening = -1;
         }
+        else
+        {
+            uart_listening = 0; // Set flag to indicate UART listening
+        }
+    }
 }
