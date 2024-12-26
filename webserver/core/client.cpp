@@ -419,6 +419,8 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency)
     return connection_id;
 }
 
+int rylr_send() {}
+
 void listen_rylr_receive(int connection_id)
 {
     char buffer[1024];
@@ -482,6 +484,7 @@ void rylr_receive()
         }
         else
         {
+            log("RYLR998: Listening for Messages...");
             uart_listening = 0; // Set flag to indicate UART listening
         }
     }
