@@ -477,7 +477,7 @@ void rylr_receive()
 
     if (uart_listening < 0)
     {
-        if (pthread_create(&thread_id, NULL, uart_listener_thread, NULL) != 0)
+        if (pthread_create(&thread_id, NULL, listen_rylr_receive, NULL) != 0)
         {
             perror("Failed to create UWslART listener thread");
             uart_listening = -1;
