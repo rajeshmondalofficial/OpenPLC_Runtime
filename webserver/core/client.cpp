@@ -463,7 +463,7 @@ void listen_rylr_receive(int connection_id)
     }
 }
 // RYLR Received Block
-void rylr_receive(uint8_t *recv_buffer)
+void rylr_receive()
 {
     pthread_t thread_id;
     int connection_id = get_uart_connection(UART_DEVICE, 9600);
