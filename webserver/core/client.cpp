@@ -488,4 +488,6 @@ char* rylr_receive()
             uart_listening = 0; // Set flag to indicate UART listening
         }
     }
+
+    return "Hello";
 }

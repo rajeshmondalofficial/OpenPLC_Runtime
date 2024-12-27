@@ -153,6 +153,15 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   IEC_STRING message = GetFbVar(MESSAGE);
 
   char* receive_message = rylr_receive();
+
+  size_t data_len = strlen(receive_message);
+  if (data_len > 255) data_len = 255;
+
+  // Use dot operator if message is not a pointer
+  strncpy((char *)message.body, receive_message, data_len); // Copy data to body
+  message.body[data_len] = '\0';                     // Null-terminate
+  message.len = (uint8_t)data_len; 
+
   SetFbVar(MESSAGE, message);
 
 #undef GetFbVar
