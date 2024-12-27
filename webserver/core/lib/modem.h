@@ -155,7 +155,7 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
 
   char* receive_message = rylr_receive();
   // Trim the +RCV=
-  strtok_r(receive_message, "=", &receive_message);
+  // strtok_r(receive_message, "=", &receive_message);
   // char* type = strtok(receive_message, "=");
 
 
