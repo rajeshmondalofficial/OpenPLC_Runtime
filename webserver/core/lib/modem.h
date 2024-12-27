@@ -151,15 +151,21 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
 #define GetFbVar(var, ...) __GET_VAR(data__->var, __VA_ARGS__)
 #define SetFbVar(var, val, ...) __SET_VAR(data__->, var, __VA_ARGS__, val)
   IEC_STRING message = GetFbVar(MESSAGE);
+  IEC_STRING address = GetFbVar(ADDRESS);
 
   char* receive_message = rylr_receive();
-  char* type = strtok(receive_message, "=");
+  // char* type = strtok(receive_message, "=");
 
 
-  // Use dot operator if message is not a pointer
+  // Set Message
   strncpy((char *)message.body, receive_message, strlen(receive_message)); // Copy data to body
   message.body[strlen(receive_message)] = '\0';                     // Null-terminate
   message.len = (uint8_t)strlen(receive_message); 
+
+  // Set Address
+  strncpy((char *)address.body, receive_message, strlen(receive_message)); // Copy data to body
+  address.body[strlen(receive_message)] = '\0';                     // Null-terminate
+  address.len = (uint8_t)strlen(receive_message); 
 
   SetFbVar(MESSAGE, message);
 
