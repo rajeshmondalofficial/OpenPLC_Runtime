@@ -57,6 +57,7 @@ pthread_mutex_t uart_mutex;  // Mutex for thread-safe access
 unsigned char dataReady = 0; // Flag for new data
 int uart_listening = -1;     // Flag for listening UART
 char log_msg[1000];
+char rylr_message[1024];
 
 // RYLR998 Modem Specific Variables
 int mode_connection_id = -1;
@@ -452,6 +453,7 @@ void listen_rylr_receive()
                     if (temp == '\n')
                     { // End of packet
                         buffer[index] = '\0';
+                        strcpy(rylr_message, buffer);
                         sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
                         log(log_msg);
                         index = 0;
@@ -489,5 +491,5 @@ char* rylr_receive()
         }
     }
 
-    return "Hello";
+    return rylr_message;
 }
