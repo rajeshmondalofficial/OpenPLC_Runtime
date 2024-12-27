@@ -154,6 +154,8 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   IEC_STRING address = GetFbVar(ADDRESS);
 
   char* receive_message = rylr_receive();
+  // Trim the +RCV=
+  strtok_r(receive_message, "=", &receive_message);
   // char* type = strtok(receive_message, "=");
 
 
@@ -168,6 +170,7 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   address.len = (uint8_t)strlen(receive_message); 
 
   SetFbVar(MESSAGE, message);
+  SetFbVar(ADDRESS, address);
 
 #undef GetFbVar
 #undef SetFbVar
