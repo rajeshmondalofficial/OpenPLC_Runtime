@@ -471,7 +471,7 @@ void listen_rylr_receive()
     }
 }
 // RYLR Received Block
-void rylr_receive()
+char* rylr_receive()
 {
     pthread_t thread_id;
 
