@@ -153,16 +153,21 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   IEC_STRING message = GetFbVar(MESSAGE);
   IEC_STRING address = GetFbVar(ADDRESS);
 
+  char *saveptr; // Pointer for strtok_r
+  char *token;
+
   char* receive_message = rylr_receive();
+  // Tokenize the string
+  token = strtok_r(receive_message, "=", &saveptr);
   // Trim the +RCV=
   // strtok_r(receive_message, "=", &receive_message);
   // char* type = strtok(receive_message, "=");
 
 
   // Set Message
-  strncpy((char *)message.body, receive_message, strlen(receive_message)); // Copy data to body
-  message.body[strlen(receive_message)] = '\0';                     // Null-terminate
-  message.len = (uint8_t)strlen(receive_message); 
+  strncpy((char *)message.body, token, strlen(token)); // Copy data to body
+  message.body[strlen(token)] = '\0';                     // Null-terminate
+  message.len = (uint8_t)strlen(token); 
 
   // Set Address
   strncpy((char *)address.body, receive_message, strlen(receive_message)); // Copy data to body
