@@ -157,9 +157,9 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
 
 
   // Use dot operator if message is not a pointer
-  strncpy((char *)message.body, type, strlen(type)); // Copy data to body
-  message.body[strlen(type)] = '\0';                     // Null-terminate
-  message.len = (uint8_t)strlen(type); 
+  strncpy((char *)message.body, receive_message, strlen(receive_message)); // Copy data to body
+  message.body[strlen(receive_message)] = '\0';                     // Null-terminate
+  message.len = (uint8_t)strlen(receive_message); 
 
   SetFbVar(MESSAGE, message);
 
