@@ -168,12 +168,12 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
       char *rest_after_address = strtok_r(NULL, ",", &saveptr2);
       char *length_payload = strtok_r(rest_after_address, ",", &saveptr3);
       char *rest_after_length = strtok_r(NULL, ",", &saveptr3);
-      char *message_payload = strtok_r(rest_after_length, ",", &saveptr4);
-      char *rest_after_message = strtok_r(NULL, ",", &saveptr4);
+      // char *message_payload = strtok_r(rest_after_length, ",", &saveptr4);
+      // char *rest_after_message = strtok_r(NULL, ",", &saveptr4);
       // Set Message
-      strncpy((char *)message.body, message_payload, strlen(message_payload)); // Copy data to body
-      message.body[strlen(message_payload)] = '\0';                            // Null-terminate
-      message.len = (uint8_t)strlen(message_payload);
+      strncpy((char *)message.body, rest_after_length, strlen(rest_after_length)); // Copy data to body
+      message.body[strlen(rest_after_length)] = '\0';                            // Null-terminate
+      message.len = (uint8_t)strlen(rest_after_length);
 
       // Set Address
       strncpy((char *)address.body, address_payload, strlen(address_payload)); // Copy data to body
