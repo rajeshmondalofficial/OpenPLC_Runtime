@@ -426,7 +426,7 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
     char msg_buffer[256];
 
     // Convert the integer to a string
-    sprintf(at_command, "AT+SEND=%u,%d,%s=%u\r\n", address, strlen(payload_data), payload_data);
+    sprintf(at_command, "AT+SEND=%u,%d,%c=%u\r\n", address, strlen(payload_data), payload_data);
     log(at_command);
     if (trigger)
     {
