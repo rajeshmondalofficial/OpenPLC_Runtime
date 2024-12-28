@@ -181,8 +181,8 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
       address.len = (uint8_t)strlen(address_payload);
 
       // Set Length
-      strncpy((char *)length.body, rest_after_length, strlen(rest_after_length)); // Copy data to body
-      length.body[strlen(rest_after_length)] = '\0';                            // Null-terminate
+      strncpy((char *)length.body, length_payload, strlen(length_payload)); // Copy data to body
+      length.body[strlen(length_payload)] = '\0';                            // Null-terminate
       length.len = (uint8_t)strlen(rest_after_length);
     }
   }
