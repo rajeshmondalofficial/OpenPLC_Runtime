@@ -164,36 +164,24 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
 
     if (secondPart != NULL)
     {
-      // char *address_payload = strtok_r(secondPart, ",", &saveptr2);
-      // char *rest_after_address = strtok_r(NULL, ",", &saveptr2);
-      // char *length_payload = strtok_r(rest_after_address, ",", &saveptr2);
-      // char *rest_after_length = strtok_r(NULL, ",", &saveptr2);
-
-      char *token = strtok_r(secondPart, ",", &saveptr2);
-      while (token != NULL)
-      {
-        token = strtok_r(NULL, ",", &saveptr2);
-      
-      }
-
-        strncpy((char *)message.body, secondPart, strlen(secondPart)); // Copy data to body
-        message.body[strlen(secondPart)] = '\0';                            // Null-terminate
-        message.len = (uint8_t)strlen(secondPart);
+      char *address_payload = strtok_r(secondPart, ",", &saveptr2);
+      char *length_payload = strtok_r(NULL, ",", &saveptr2);
+      char *message_payload = strtok_r(NULL, ",", &saveptr2);
 
       // Set Message
-      // strncpy((char *)message.body, message_payload, strlen(message_payload)); // Copy data to body
-      // message.body[strlen(message_payload)] = '\0';                            // Null-terminate
-      // message.len = (uint8_t)strlen(message_payload);
+      strncpy((char *)message.body, message_payload, strlen(message_payload)); // Copy data to body
+      message.body[strlen(message_payload)] = '\0';                            // Null-terminate
+      message.len = (uint8_t)strlen(message_payload);
 
-      // // Set Address
-      // strncpy((char *)address.body, address_payload, strlen(address_payload)); // Copy data to body
-      // address.body[strlen(address_payload)] = '\0';                            // Null-terminate
-      // address.len = (uint8_t)strlen(address_payload);
+      // Set Address
+      strncpy((char *)address.body, address_payload, strlen(address_payload)); // Copy data to body
+      address.body[strlen(address_payload)] = '\0';                            // Null-terminate
+      address.len = (uint8_t)strlen(address_payload);
 
-      // // Set Length
-      // strncpy((char *)length.body, length_payload, strlen(length_payload)); // Copy data to body
-      // length.body[strlen(length_payload)] = '\0';                           // Null-terminate
-      // length.len = (uint8_t)strlen(length_payload);
+      // Set Length
+      strncpy((char *)length.body, length_payload, strlen(length_payload)); // Copy data to body
+      length.body[strlen(length_payload)] = '\0';                           // Null-terminate
+      length.len = (uint8_t)strlen(length_payload);
     }
   }
 
