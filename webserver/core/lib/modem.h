@@ -153,6 +153,7 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   IEC_STRING message = GetFbVar(MESSAGE);
   IEC_STRING address = GetFbVar(ADDRESS);
   IEC_STRING length = GetFbVar(LENGTH);
+  
 
   char *receive_message = rylr_receive();
   if (strlen(receive_message) > 0)
@@ -167,6 +168,8 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
       char *address_payload = strtok_r(secondPart, ",", &saveptr2);
       char *length_payload = strtok_r(NULL, ",", &saveptr2);
       char *message_payload = strtok_r(NULL, ",", &saveptr2);
+      char *rssi_payload = strtok_r(NULL, ",", &saveptr2);
+      char *snr_payload = strtok_r(NULL, ",", &saveptr2);
 
       // Set Message
       strncpy((char *)message.body, message_payload, strlen(message_payload)); // Copy data to body
@@ -185,9 +188,11 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
     }
   }
 
+
   SetFbVar(MESSAGE, message);
   SetFbVar(ADDRESS, address);
   SetFbVar(LENGTH, length);
+  SetFbVar(BYTES_RECEIVED,strlen(receive_message));
 
 #undef GetFbVar
 #undef SetFbVar
