@@ -154,19 +154,21 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   IEC_STRING address = GetFbVar(ADDRESS);
 
   char *receive_message = rylr_receive();
-  // Trim the +RCV=
-  // strtok_r(receive_message, "=", &receive_message);
-  // char* type = strtok(receive_message, "=");
+  if (strlen(rylr_message) > 0)
+  {
+    char *saveptr;
+    // Remove +RCV from the string
+    strtok_r(rylr_message, "=", &saveptr);
+    // Set Message
+    strncpy((char *)message.body, receive_message, strlen(receive_message)); // Copy data to body
+    message.body[strlen(receive_message)] = '\0';                            // Null-terminate
+    message.len = (uint8_t)strlen(receive_message);
 
-  // Set Message
-  strncpy((char *)message.body, receive_message, strlen(receive_message)); // Copy data to body
-  message.body[strlen(receive_message)] = '\0';                  // Null-terminate
-  message.len = (uint8_t)strlen(receive_message);
-
-  // Set Address
-  strncpy((char *)address.body, receive_message, strlen(receive_message)); // Copy data to body
-  address.body[strlen(receive_message)] = '\0';                            // Null-terminate
-  address.len = (uint8_t)strlen(receive_message);
+    // Set Address
+    strncpy((char *)address.body, receive_message, strlen(receive_message)); // Copy data to body
+    address.body[strlen(receive_message)] = '\0';                            // Null-terminate
+    address.len = (uint8_t)strlen(receive_message);
+  }
 
   SetFbVar(MESSAGE, message);
   SetFbVar(ADDRESS, address);
