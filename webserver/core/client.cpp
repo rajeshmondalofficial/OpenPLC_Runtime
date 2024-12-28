@@ -490,6 +490,8 @@ char* rylr_receive()
             uart_listening = 0; // Set flag to indicate UART listening
         }
     }
+    char *saveptr;
+    char *token = strtok_r(rylr_message, "=", &saveptr);
 
-    return rylr_message;
+    return token;
 }
