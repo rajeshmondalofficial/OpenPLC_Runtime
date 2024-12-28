@@ -154,11 +154,11 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   IEC_STRING address = GetFbVar(ADDRESS);
 
   char *receive_message = rylr_receive();
-  if (strlen(rylr_message) > 0)
+  if (strlen(receive_message) > 0)
   {
     char *saveptr;
     // Remove +RCV from the string
-    strtok_r(rylr_message, "=", &saveptr);
+    strtok_r(receive_message, "=", &saveptr);
     // Set Message
     strncpy((char *)message.body, receive_message, strlen(receive_message)); // Copy data to body
     message.body[strlen(receive_message)] = '\0';                            // Null-terminate
