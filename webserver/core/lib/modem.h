@@ -183,7 +183,7 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
       // Set Length
       strncpy((char *)length.body, length_payload, strlen(length_payload)); // Copy data to body
       length.body[strlen(length_payload)] = '\0';                            // Null-terminate
-      length.len = (uint8_t)strlen(rest_after_length);
+      length.len = (uint8_t)strlen(length_payload);
     }
   }
 
