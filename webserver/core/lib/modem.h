@@ -44,6 +44,7 @@ typedef struct
 } RYLR998_RECEIVE;
 
 int rylr998_config(uint8_t *device, int baud_rate, int frequency, bool trigger);
+int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_data);
 char *rylr_receive(int connection_id);
 
 static void RYLR998_CONFIG_init__(RYLR998_CONFIG *data__, BOOL retain)
@@ -115,6 +116,22 @@ static void RYLR998_SEND_body__(RYLR998_SEND *data__)
   {
     __SET_VAR(data__->, ENO, , __BOOL_LITERAL(TRUE));
   }
+
+#define GetFbVar(var, ...) __GET_VAR(data__->var, __VA_ARGS__)
+#define SetFbVar(var, val, ...) __SET_VAR(data__->, var, __VA_ARGS__, val)
+  int connection_id = GetFbVar(CONNECTION_ID);
+  bool trigger = GetFbVar(TRIGGER);
+  int address = GetFbVar(ADDRESS);
+  IEC_STRING payload_data = GetFbVar(PAYLOAD_DATA);
+  int bytes_sent = GetFbVar(BYTES_SENT);
+  IEC_STRING response = GetFbVar(RESPONSE);
+  bool success = GetFbVar(SUCCESS);
+
+  int send_response = rylr_send(connection_id, trigger, address, payload_data.body);
+  // SetFbVar(BYTES_SENT, send_response);
+  // SetFbVar(SUCCESS, send_response == 0);
+#undef GetFbVar
+#undef SetFbVar
 
   goto __end;
 

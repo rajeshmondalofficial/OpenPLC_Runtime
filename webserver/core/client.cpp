@@ -53,6 +53,7 @@ int should_listen = 1;
 int global_uart_fd = -1;
 unsigned char inputData[256];
 unsigned char rylr_config_resp[256];
+unsigned char rylr_send_resp[256];
 pthread_mutex_t uart_mutex;  // Mutex for thread-safe access
 unsigned char dataReady = 0; // Flag for new data
 int uart_listening = -1;     // Flag for listening UART
@@ -419,7 +420,34 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency, bool trigger)
     return connection_id;
 }
 
-int rylr_send() {}
+int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_data)
+{
+    char at_command[256];
+    char msg_buffer[256];
+
+    // Convert the integer to a string
+    sprintf(at_command, "AT+SEND=%u,%d,%s=%u\r\n", address, strlen(payload_data), payload_data);
+    if (trigger)
+    {
+        int byte_write = write(connection_id, at_command, strlen(at_command));
+        sprintf(log_msg, "RYLR: Write AT Command => %s\n", at_command);
+        log(log_msg);
+
+        int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
+        strncpy(rylr_send_resp, msg_buffer, sizeof(rylr_send_resp) - 1);
+
+        if (byte_read > 0)
+        {
+
+            msg_buffer[byte_read] = '\0';
+            sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_send_resp);
+            log(log_msg);
+            tcflush(connection_id, TCIOFLUSH);
+            return 1;
+        }
+    }
+    return -1;
+}
 
 void listen_rylr_receive(int connection_id)
 {
