@@ -156,6 +156,8 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   
 
   char *receive_message = rylr_receive();
+  SetFbVar(BYTES_RECEIVED,strlen(receive_message));
+  
   if (strlen(receive_message) > 0)
   {
     char *saveptr1, *saveptr2, *saveptr3, *saveptr4;
@@ -192,7 +194,7 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   SetFbVar(MESSAGE, message);
   SetFbVar(ADDRESS, address);
   SetFbVar(LENGTH, length);
-  SetFbVar(BYTES_RECEIVED,strlen(receive_message));
+  
 
 #undef GetFbVar
 #undef SetFbVar
