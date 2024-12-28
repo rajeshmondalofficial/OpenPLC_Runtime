@@ -156,19 +156,24 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   char *receive_message = rylr_receive();
   if (strlen(receive_message) > 0)
   {
-    char *saveptr;
-    // Remove +RCV from the string
-    strtok_r(receive_message, "=", &saveptr);
-    char* address_payload = strtok_r(saveptr, ",", &saveptr);
-    // Set Message
-    strncpy((char *)message.body, receive_message, strlen(receive_message)); // Copy data to body
-    message.body[strlen(receive_message)] = '\0';                            // Null-terminate
-    message.len = (uint8_t)strlen(receive_message);
+    char *saveptr1, *saveptr2;
+    // Step 1: Split by '='
+    char *firstPart = strtok_r(receive_message, "=", &saveptr1);
+    char *secondPart = strtok_r(NULL, "=", &saveptr1);
 
-    // Set Address
-    strncpy((char *)address.body, address_payload, strlen(address_payload)); // Copy data to body
-    address.body[strlen(address_payload)] = '\0';                            // Null-terminate
-    address.len = (uint8_t)strlen(address_payload);
+    if (secondPart != NULL)
+    {
+      char *address_payload = strtok_r(secondPart, ",", &saveptr2);
+      // Set Message
+      strncpy((char *)message.body, receive_message, strlen(receive_message)); // Copy data to body
+      message.body[strlen(receive_message)] = '\0';                            // Null-terminate
+      message.len = (uint8_t)strlen(receive_message);
+
+      // Set Address
+      strncpy((char *)address.body, address_payload, strlen(address_payload)); // Copy data to body
+      address.body[strlen(address_payload)] = '\0';                            // Null-terminate
+      address.len = (uint8_t)strlen(address_payload);
+    }
   }
 
   SetFbVar(MESSAGE, message);
