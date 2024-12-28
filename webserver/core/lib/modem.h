@@ -173,7 +173,7 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
       while (token != NULL)
       {
         token = strtok_r(NULL, ",", &saveptr2);
-        log(token);
+      
       }
 
         strncpy((char *)message.body, secondPart, strlen(secondPart)); // Copy data to body
