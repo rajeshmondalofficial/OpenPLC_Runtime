@@ -159,15 +159,16 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
     char *saveptr;
     // Remove +RCV from the string
     strtok_r(receive_message, "=", &saveptr);
+    char* address_payload = strtok_r(saveptr, ",", &saveptr);
     // Set Message
     strncpy((char *)message.body, receive_message, strlen(receive_message)); // Copy data to body
     message.body[strlen(receive_message)] = '\0';                            // Null-terminate
     message.len = (uint8_t)strlen(receive_message);
 
     // Set Address
-    strncpy((char *)address.body, receive_message, strlen(receive_message)); // Copy data to body
-    address.body[strlen(receive_message)] = '\0';                            // Null-terminate
-    address.len = (uint8_t)strlen(receive_message);
+    strncpy((char *)address.body, address_payload, strlen(address_payload)); // Copy data to body
+    address.body[strlen(address_payload)] = '\0';                            // Null-terminate
+    address.len = (uint8_t)strlen(address_payload);
   }
 
   SetFbVar(MESSAGE, message);
