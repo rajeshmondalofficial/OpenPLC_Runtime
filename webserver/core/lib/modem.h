@@ -43,7 +43,7 @@ typedef struct
   __DECLARE_VAR(STRING, MESSAGE)
 } RYLR998_RECEIVE;
 
-int rylr998_config(uint8_t *device, int baud_rate, int frequency);
+int rylr998_config(uint8_t *device, int baud_rate, int frequency, bool trigger);
 char *rylr_receive(int connection_id);
 
 static void RYLR998_CONFIG_init__(RYLR998_CONFIG *data__, BOOL retain)
@@ -77,11 +77,10 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
   IEC_STRING device = GetFbVar(DEVICE);
   int frequency = GetFbVar(FREQUENCY);
   bool trigger = GetFbVar(TRIGGER);
-  if (trigger)
-  {
-    int config_response = rylr998_config(device.body, baud_rate, frequency);
-    SetFbVar(SUCCESS, config_response);
-  }
+
+
+  int config_response = rylr998_config(device.body, baud_rate, frequency, trigger);
+  SetFbVar(SUCCESS, config_response);
 
 #undef GetFbVar
 #undef SetFbVar
@@ -154,10 +153,9 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   IEC_STRING address = GetFbVar(ADDRESS);
   IEC_STRING length = GetFbVar(LENGTH);
   int connection_id = GetFbVar(CONNECTION_ID);
-  
 
   char *receive_message = rylr_receive(connection_id);
-  SetFbVar(BYTES_RECEIVED,strlen(receive_message));
+  SetFbVar(BYTES_RECEIVED, strlen(receive_message));
 
   if (strlen(receive_message) > 0)
   {
@@ -191,11 +189,9 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
     }
   }
 
-
   SetFbVar(MESSAGE, message);
   SetFbVar(ADDRESS, address);
   SetFbVar(LENGTH, length);
-  
 
 #undef GetFbVar
 #undef SetFbVar

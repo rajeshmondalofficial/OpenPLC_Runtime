@@ -381,15 +381,14 @@ int get_uart_connection(uint8_t *device, int baud_rate)
 }
 
 // RYLR Configuration Block
-int rylr998_config(uint8_t *device, int baud_rate, int frequency)
+int rylr998_config(uint8_t *device, int baud_rate, int frequency, bool trigger)
 {
     int connection_id = get_uart_connection(device, baud_rate);
     if (connection_id < 0)
     {
         return 0;
     }
-    char termination[] = {0x0D, 0x0A};
-    // char at_command[256] = "AT+ADDRESS=19\r\n";
+
     char at_command[256];
     char msg_buffer[256];
     char numStr[32];
@@ -397,25 +396,25 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency)
 
     // Convert the integer to a string
     sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
-    // strcat(at_command, numStr);
-    // strcat(at_command, termination);
-
-    int byte_write = write(connection_id, at_command, strlen(at_command));
-    sprintf(log_msg, "RYLR: Write AT Command => %s\n", at_command);
-    log(log_msg);
-    // write(connection_id, termination, strlen(termination));
-
-    int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
-    strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
-
-    if (byte_read > 0)
+    if (trigger)
     {
 
-        msg_buffer[byte_read] = '\0';
-        sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_config_resp);
+        int byte_write = write(connection_id, at_command, strlen(at_command));
+        sprintf(log_msg, "RYLR: Write AT Command => %s\n", at_command);
         log(log_msg);
-        tcflush(connection_id, TCIOFLUSH);
-        return connection_id;
+
+        int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
+        strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
+
+        if (byte_read > 0)
+        {
+
+            msg_buffer[byte_read] = '\0';
+            sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_config_resp);
+            log(log_msg);
+            tcflush(connection_id, TCIOFLUSH);
+            return connection_id;
+        }
     }
     return connection_id;
 }
@@ -473,7 +472,7 @@ void listen_rylr_receive(int connection_id)
     }
 }
 // RYLR Received Block
-char* rylr_receive(int connection_id)
+char *rylr_receive(int connection_id)
 {
     pthread_t thread_id;
 
@@ -490,7 +489,6 @@ char* rylr_receive(int connection_id)
             uart_listening = 0; // Set flag to indicate UART listening
         }
     }
-    
 
     return rylr_message;
 }
