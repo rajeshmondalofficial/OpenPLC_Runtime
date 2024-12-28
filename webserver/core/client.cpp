@@ -422,9 +422,9 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency)
 
 int rylr_send() {}
 
-void listen_rylr_receive()
+void listen_rylr_receive(int connection_id)
 {
-    int connection_id = get_uart_connection(UART_DEVICE, 9600);
+    // int connection_id = get_uart_connection(UART_DEVICE, 9600);
     if (connection_id < 0)
     {
         log("Couldn't get connection");
@@ -473,13 +473,13 @@ void listen_rylr_receive()
     }
 }
 // RYLR Received Block
-char* rylr_receive()
+char* rylr_receive(int connection_id)
 {
     pthread_t thread_id;
 
     if (uart_listening < 0)
     {
-        if (pthread_create(&thread_id, NULL, listen_rylr_receive, NULL) != 0)
+        if (pthread_create(&thread_id, NULL, listen_rylr_receive, connection_id) != 0)
         {
             perror("Failed to create UWslART listener thread");
             uart_listening = -1;
