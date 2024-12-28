@@ -78,7 +78,6 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
   int frequency = GetFbVar(FREQUENCY);
   bool trigger = GetFbVar(TRIGGER);
 
-
   int config_response = rylr998_config(device.body, baud_rate, frequency, trigger);
   SetFbVar(SUCCESS, config_response);
 
@@ -154,44 +153,47 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
   IEC_STRING length = GetFbVar(LENGTH);
   int connection_id = GetFbVar(CONNECTION_ID);
 
-  char *receive_message = rylr_receive(connection_id);
-  SetFbVar(BYTES_RECEIVED, strlen(receive_message));
-
-  if (strlen(receive_message) > 0)
+  if (connection_id > 0)
   {
-    char *saveptr1, *saveptr2, *saveptr3, *saveptr4;
-    // Step 1: Split by '='
-    char *firstPart = strtok_r(receive_message, "=", &saveptr1);
-    char *secondPart = strtok_r(NULL, "=", &saveptr1);
+    char *receive_message = rylr_receive(connection_id);
+    SetFbVar(BYTES_RECEIVED, strlen(receive_message));
 
-    if (secondPart != NULL)
+    if (strlen(receive_message) > 0)
     {
-      char *address_payload = strtok_r(secondPart, ",", &saveptr2);
-      char *length_payload = strtok_r(NULL, ",", &saveptr2);
-      char *message_payload = strtok_r(NULL, ",", &saveptr2);
-      char *rssi_payload = strtok_r(NULL, ",", &saveptr2);
-      char *snr_payload = strtok_r(NULL, ",", &saveptr2);
+      char *saveptr1, *saveptr2, *saveptr3, *saveptr4;
+      // Step 1: Split by '='
+      char *firstPart = strtok_r(receive_message, "=", &saveptr1);
+      char *secondPart = strtok_r(NULL, "=", &saveptr1);
 
-      // Set Message
-      strncpy((char *)message.body, message_payload, strlen(message_payload)); // Copy data to body
-      message.body[strlen(message_payload)] = '\0';                            // Null-terminate
-      message.len = (uint8_t)strlen(message_payload);
+      if (secondPart != NULL)
+      {
+        char *address_payload = strtok_r(secondPart, ",", &saveptr2);
+        char *length_payload = strtok_r(NULL, ",", &saveptr2);
+        char *message_payload = strtok_r(NULL, ",", &saveptr2);
+        char *rssi_payload = strtok_r(NULL, ",", &saveptr2);
+        char *snr_payload = strtok_r(NULL, ",", &saveptr2);
 
-      // Set Address
-      strncpy((char *)address.body, address_payload, strlen(address_payload)); // Copy data to body
-      address.body[strlen(address_payload)] = '\0';                            // Null-terminate
-      address.len = (uint8_t)strlen(address_payload);
+        // Set Message
+        strncpy((char *)message.body, message_payload, strlen(message_payload)); // Copy data to body
+        message.body[strlen(message_payload)] = '\0';                            // Null-terminate
+        message.len = (uint8_t)strlen(message_payload);
 
-      // Set Length
-      strncpy((char *)length.body, length_payload, strlen(length_payload)); // Copy data to body
-      length.body[strlen(length_payload)] = '\0';                           // Null-terminate
-      length.len = (uint8_t)strlen(length_payload);
+        // Set Address
+        strncpy((char *)address.body, address_payload, strlen(address_payload)); // Copy data to body
+        address.body[strlen(address_payload)] = '\0';                            // Null-terminate
+        address.len = (uint8_t)strlen(address_payload);
+
+        // Set Length
+        strncpy((char *)length.body, length_payload, strlen(length_payload)); // Copy data to body
+        length.body[strlen(length_payload)] = '\0';                           // Null-terminate
+        length.len = (uint8_t)strlen(length_payload);
+      }
     }
-  }
 
-  SetFbVar(MESSAGE, message);
-  SetFbVar(ADDRESS, address);
-  SetFbVar(LENGTH, length);
+    SetFbVar(MESSAGE, message);
+    SetFbVar(ADDRESS, address);
+    SetFbVar(LENGTH, length);
+  }
 
 #undef GetFbVar
 #undef SetFbVar
