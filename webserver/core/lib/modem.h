@@ -166,8 +166,8 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
     {
       char *address_payload = strtok_r(secondPart, ",", &saveptr2);
       char *rest_after_address = strtok_r(NULL, ",", &saveptr2);
-      char *length_payload = strtok_r(rest_after_address, ",", &saveptr3);
-      char *rest_after_length = strtok_r(NULL, ",", &saveptr3);
+      char *length_payload = strtok_r(rest_after_address, ",", &saveptr2);
+      char *rest_after_length = strtok_r(NULL, ",", &saveptr2);
       // char *message_payload = strtok_r(rest_after_length, ",", &saveptr4);
       // char *rest_after_message = strtok_r(NULL, ",", &saveptr4);
       // Set Message
