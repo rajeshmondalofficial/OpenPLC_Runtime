@@ -144,8 +144,12 @@ static void RYLR998_SEND_body__(RYLR998_SEND *data__)
   int bytes_sent = GetFbVar(BYTES_SENT);
   IEC_STRING response = GetFbVar(RESPONSE);
   bool success = GetFbVar(SUCCESS);
+  bool enable = GetFbVar(ENABLE);
+  if (enable)
+  {
+    int send_response = rylr_send(connection_id, trigger, address, payload_data.body);
+  }
 
-  int send_response = rylr_send(connection_id, trigger, address, payload_data.body);
   // SetFbVar(BYTES_SENT, send_response);
   // SetFbVar(SUCCESS, send_response == 0);
 #undef GetFbVar
