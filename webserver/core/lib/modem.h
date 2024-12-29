@@ -90,7 +90,7 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
   bool enable = GetFbVar(ENABLE);
   int baud_rate = GetFbVar(BAUD_RATE);
   IEC_STRING device = GetFbVar(DEVICE);
-  int payload = GetFbVar(PAYLOAD);
+  IEC_STRING payload = GetFbVar(PAYLOAD);
   bool trigger = GetFbVar(READ_TRIGGER);
 
   if (enable)
