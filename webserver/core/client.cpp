@@ -437,15 +437,17 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
 
         int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
         strncpy(rylr_send_resp, msg_buffer, sizeof(rylr_send_resp) - 1);
+        sprintf(log_msg, "RYLR: Received Bytes => %d\n", byte_read);
+        log(log_msg);
 
         if (byte_read > 0)
         {
 
             msg_buffer[byte_read] = '\0';
-            sprintf(log_msg, "RYLR: Received Bytes => %s\n", msg_buffer);
+            sprintf(log_msg, "RYLR: Received Bytes Message => %s\n", msg_buffer);
             log(log_msg);
             rylr_send_msg_counter = rylr_send_msg_counter + 1;
-            tcflush(connection_id, TCIOFLUSH);
+            // tcflush(connection_id, TCIOFLUSH);
             return 1;
         }
     }
