@@ -150,11 +150,12 @@ static void RYLR998_SEND_body__(RYLR998_SEND *data__)
   {
     int send_response = rylr_send(connection_id, trigger, address, payload_data.body);
     int msg_counter = get_rylr_send_msg_counter();
-    char *send_response = get_send_resp();
+    char *send_response_msg = get_send_resp();
 
-    strncpy((char *)response.body, send_response, strlen(send_response)); // Copy data to body
-    response.body[strlen(send_response)] = '\0';                            // Null-terminate
-    response.len = (uint8_t)strlen(send_response);
+    strncpy((char *)response.body, send_response_msg, strlen(send_response_msg)); // Copy data to body
+    response.body[strlen(send_response_msg)] = '\0';                            // Null-terminate
+    response.len = (uint8_t)strlen(send_response_msg);
+
     SetFbVar(MSG_COUNTER, msg_counter);
     SetFbVar(MSG_LEN, strlen(payload_data.body));
     SetFbVar(RESPONSE, response);
