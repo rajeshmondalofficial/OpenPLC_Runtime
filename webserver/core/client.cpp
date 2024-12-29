@@ -442,7 +442,7 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
             msg_buffer[byte_read] = '\0';
             sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_send_resp);
             log(log_msg);
-            tcflush(connection_id, TCIOFLUSH);
+            // tcflush(connection_id, TCIOFLUSH);
             return 1;
         }
     }
