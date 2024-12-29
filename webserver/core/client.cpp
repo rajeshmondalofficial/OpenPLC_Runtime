@@ -59,7 +59,7 @@ unsigned char dataReady = 0; // Flag for new data
 int uart_listening = -1;     // Flag for listening UART
 char log_msg[1000];
 char rylr_message[1024];
-int rylr_msg_counter = 0
+int rylr_msg_counter = 0;
 
 // RYLR998 Modem Specific Variables
 int mode_connection_id = -1;
