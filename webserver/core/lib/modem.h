@@ -157,7 +157,7 @@ static void RYLR998_SEND_body__(RYLR998_SEND *data__)
     response.len = (uint8_t)strlen(send_response_msg);
 
     SetFbVar(MSG_COUNTER, msg_counter);
-    SetFbVar(MSG_LEN, strlen(payload_data.body));
+    // SetFbVar(MSG_LEN, strlen(payload_data.body));
     SetFbVar(RESPONSE, response);
   }
 
