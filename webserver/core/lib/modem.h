@@ -140,7 +140,7 @@ static void RYLR998_SEND_body__(RYLR998_SEND *data__)
   int connection_id = GetFbVar(CONNECTION_ID);
   bool trigger = GetFbVar(TRIGGER);
   int address = GetFbVar(DESTINATION_ADDRESS);
-  IEC_STRING payload_data = GetFbVar(PAYLOAD_DATA);
+  IEC_STRING payload_data = GetFbVar(MESSAGE);
   int bytes_sent = GetFbVar(BYTES_SENT);
   IEC_STRING response = GetFbVar(RESPONSE);
   bool success = GetFbVar(SUCCESS);
