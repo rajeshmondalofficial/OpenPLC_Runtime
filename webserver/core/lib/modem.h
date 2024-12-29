@@ -91,7 +91,7 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
   int baud_rate = GetFbVar(BAUD_RATE);
   IEC_STRING device = GetFbVar(DEVICE);
   int payload = GetFbVar(PAYLOAD);
-  bool trigger = GetFbVar(TRIGGER);
+  bool trigger = GetFbVar(READ_TRIGGER);
 
   if (enable)
   {
