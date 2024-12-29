@@ -59,6 +59,7 @@ unsigned char dataReady = 0; // Flag for new data
 int uart_listening = -1;     // Flag for listening UART
 char log_msg[1000];
 char rylr_message[1024];
+int rylr_msg_counter = 0
 
 // RYLR998 Modem Specific Variables
 int mode_connection_id = -1;
@@ -382,7 +383,7 @@ int get_uart_connection(uint8_t *device, int baud_rate)
 }
 
 // RYLR Configuration Block
-int rylr998_config(uint8_t *device, int baud_rate, int frequency, bool trigger)
+int rylr998_config(uint8_t *device, int baud_rate, bool trigger)
 {
     int connection_id = get_uart_connection(device, baud_rate);
     if (connection_id < 0)
@@ -396,7 +397,7 @@ int rylr998_config(uint8_t *device, int baud_rate, int frequency, bool trigger)
     char log_msg[1024];
 
     // Convert the integer to a string
-    sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
+    // sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
     if (trigger)
     {
 
@@ -484,6 +485,7 @@ void listen_rylr_receive(int connection_id)
                         sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
                         log(log_msg);
                         index = 0;
+                        rylr_msg_counter = rylr_msg_counter + 1;
                     }
                     else if (index < BUFFER_SIZE - 1)
                     {
@@ -520,3 +522,8 @@ char *rylr_receive(int connection_id)
 
     return rylr_message;
 }
+// Get RYLR Message Counter
+int get_rylr_msg_counter() {
+    return rylr_msg_counter;
+}
+
