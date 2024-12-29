@@ -60,6 +60,7 @@ int uart_listening = -1;     // Flag for listening UART
 char log_msg[1000];
 char rylr_message[1024];
 int rylr_msg_counter = 0;
+int rylr_send_msg_counter = 0;
 
 // RYLR998 Modem Specific Variables
 int mode_connection_id = -1;
@@ -443,6 +444,7 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
             msg_buffer[byte_read] = '\0';
             sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_send_resp);
             log(log_msg);
+            rylr_send_msg_counter = rylr_send_msg_counter + 1;
             // tcflush(connection_id, TCIOFLUSH);
             return 1;
         }
@@ -450,6 +452,13 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
     return -1;
 }
 
+int get_rylr_send_msg_counter() {
+    return rylr_send_msg_counter;
+}
+
+char *get_send_resp() {
+    return rylr_send_resp;
+}
 void listen_rylr_receive(int connection_id)
 {
     // int connection_id = get_uart_connection(UART_DEVICE, 9600);

@@ -56,6 +56,8 @@ int rylr998_config(uint8_t *device, int baud_rate, bool trigger);
 int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_data);
 char *rylr_receive(int connection_id);
 int get_rylr_msg_counter();
+int get_rylr_send_msg_counter();
+char *get_send_resp();
 
 static void RYLR998_CONFIG_init__(RYLR998_CONFIG *data__, BOOL retain)
 {
@@ -117,8 +119,8 @@ static void RYLR998_SEND_init__(RYLR998_SEND *data__, BOOL retain)
   __INIT_VAR(data__->CONNECTION_ID, 0, retain)
   __INIT_VAR(data__->DESTINATION_ADDRESS, 0, retain)
   __INIT_VAR(data__->MESSAGE, __STRING_LITERAL(0, ""), retain)
-  __INIT_VAR(data__->BYTES_SENT, 0, retain)
-  __INIT_VAR(data__->SUCCESS, __BOOL_LITERAL(FALSE), retain)
+  __INIT_VAR(data__->MSG_LEN, 0, retain)
+  __INIT_VAR(data__->MSG_COUNTER, 0, retain)
   __INIT_VAR(data__->RESPONSE, __STRING_LITERAL(0, ""), retain)
 }
 
@@ -141,13 +143,21 @@ static void RYLR998_SEND_body__(RYLR998_SEND *data__)
   bool trigger = GetFbVar(TRIGGER);
   int address = GetFbVar(DESTINATION_ADDRESS);
   IEC_STRING payload_data = GetFbVar(MESSAGE);
-  int bytes_sent = GetFbVar(BYTES_SENT);
   IEC_STRING response = GetFbVar(RESPONSE);
-  bool success = GetFbVar(SUCCESS);
   bool enable = GetFbVar(ENABLE);
+
   if (enable)
   {
     int send_response = rylr_send(connection_id, trigger, address, payload_data.body);
+    int msg_counter = get_rylr_send_msg_counter();
+    char *send_response = get_send_resp();
+
+    strncpy((char *)response.body, send_response, strlen(send_response)); // Copy data to body
+    response.body[strlen(send_response)] = '\0';                            // Null-terminate
+    response.len = (uint8_t)strlen(send_response);
+    SetFbVar(MSG_COUNTER, msg_counter);
+    SetFbVar(MSG_LEN, strlen(payload_data.body));
+    SetFbVar(RESPONSE, response);
   }
 
   // SetFbVar(BYTES_SENT, send_response);
