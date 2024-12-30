@@ -394,9 +394,10 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
     }
 
     char at_command[256];
-    char msg_buffer[256];
+    char msg_buffer[1024];
     char numStr[32];
     char log_msg[1024];
+    int index = 0;
 
     // Convert the integer to a string
     if (read_trigger)
