@@ -399,7 +399,7 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
 
     // Convert the integer to a string
     // sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
-    if (read_trigger)
+    if (read_trigger || write_trigger)
     {
 
         int byte_write = write(connection_id, at_command, strlen(at_command));
