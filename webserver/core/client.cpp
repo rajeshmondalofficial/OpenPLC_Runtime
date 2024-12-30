@@ -384,7 +384,7 @@ int get_uart_connection(uint8_t *device, int baud_rate)
 }
 
 // RYLR Configuration Block
-int rylr998_config(uint8_t *device, int baud_rate, bool trigger)
+int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write_trigger, uint8_t *payload)
 {
     int connection_id = get_uart_connection(device, baud_rate);
     if (connection_id < 0)
@@ -399,7 +399,7 @@ int rylr998_config(uint8_t *device, int baud_rate, bool trigger)
 
     // Convert the integer to a string
     // sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
-    if (trigger)
+    if (read_trigger)
     {
 
         int byte_write = write(connection_id, at_command, strlen(at_command));
