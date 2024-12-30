@@ -363,7 +363,7 @@ int get_uart_connection(uint8_t *device, int baud_rate)
 {
     if (mode_connection_id < 0)
     {
-        mode_connection_id = open(device, O_RDWR | O_NOCTTY);
+        mode_connection_id = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
         // Configure UART settings
         struct termios options;
         tcgetattr(mode_connection_id, &options);
@@ -398,31 +398,37 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
     char log_msg[1024];
 
     // Convert the integer to a string
-    if(read_trigger) {
-       if(mode == 4) {
-         // AT+IPR
-         sprintf(at_command, "AT+IPR?\r\n");
-       }
-       if(mode == 5) {
-         sprintf(at_command, "AT+BAND?\r\n");
-       }
-    } 
-    if(write_trigger) {
-      if(mode == 4) {
-        // AT+IPR
-        sprintf(at_command, "AT+IPR=%s\r\n",payload);
-      }
-      if(mode == 5) {
-        // AT+IPR
-        sprintf(at_command, "AT+BAND=%s\r\n",payload);
-      }
+    if (read_trigger)
+    {
+        if (mode == 4)
+        {
+            // AT+IPR
+            sprintf(at_command, "AT+IPR?\r\n");
+        }
+        if (mode == 5)
+        {
+            sprintf(at_command, "AT+BAND?\r\n");
+        }
+    }
+    if (write_trigger)
+    {
+        if (mode == 4)
+        {
+            // AT+IPR
+            sprintf(at_command, "AT+IPR=%s\r\n", payload);
+        }
+        if (mode == 5)
+        {
+            // AT+IPR
+            sprintf(at_command, "AT+BAND=%s\r\n", payload);
+        }
     }
     // sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
     if (read_trigger || write_trigger)
     {
 
         int byte_write = write(connection_id, at_command, strlen(at_command));
-        sprintf(log_msg, "RYLR: Write AT Command => %s\n", at_command);
+        sprintf(log_msg, "RYLR: Write AT Command => %s, Bytes => %d\n", at_command, strlen(at_command));
         log(log_msg);
 
         int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
@@ -473,11 +479,13 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
     return -1;
 }
 
-int get_rylr_send_msg_counter() {
+int get_rylr_send_msg_counter()
+{
     return rylr_send_msg_counter;
 }
 
-char *get_send_resp() {
+char *get_send_resp()
+{
     return rylr_send_resp;
 }
 void listen_rylr_receive(int connection_id)
@@ -553,8 +561,7 @@ char *rylr_receive(int connection_id)
     return rylr_message;
 }
 // Get RYLR Message Counter
-int get_rylr_msg_counter() {
+int get_rylr_msg_counter()
+{
     return rylr_msg_counter;
 }
-
-
