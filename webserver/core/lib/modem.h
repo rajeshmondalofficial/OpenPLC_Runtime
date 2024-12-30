@@ -95,10 +95,11 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
   IEC_STRING payload = GetFbVar(PAYLOAD);
   bool read_trigger = GetFbVar(READ_TRIGGER);
   bool write_trigger = GetFbVar(WRITE_TRIGGER);
+  int mode = GetFbVar(MODE);
 
   if (enable)
   {
-    int config_response = rylr998_config(device.body, baud_rate, read_trigger, write_trigger, payload.body);
+    int config_response = rylr998_config(device.body, baud_rate, read_trigger, write_trigger, payload.body, mode);
     SetFbVar(CONNECTION_ID, config_response);
   }
 
