@@ -399,7 +399,10 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
 
     // Convert the integer to a string
     if(read_trigger) {
-       
+       if(mode == 4) {
+         // AT+IPR
+         sprintf(at_command, "AT+IPR?\r\n");
+       }
     } 
     if(write_trigger) {
     }
