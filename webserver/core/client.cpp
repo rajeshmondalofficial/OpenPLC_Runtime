@@ -363,7 +363,7 @@ int get_uart_connection(uint8_t *device, int baud_rate)
 {
     if (mode_connection_id < 0)
     {
-        mode_connection_id = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+        mode_connection_id = open(device, O_RDWR | O_NOCTTY);
         // Configure UART settings
         struct termios options;
         tcgetattr(mode_connection_id, &options);
