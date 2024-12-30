@@ -52,7 +52,7 @@ typedef struct
   __DECLARE_VAR(STRING, SNR)
 } RYLR998_RECEIVE;
 
-int rylr998_config(uint8_t *device, int baud_rate, bool trigger);
+int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write_trigger, uint8_t *payload, int mode);
 int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_data);
 char *rylr_receive(int connection_id);
 int get_rylr_msg_counter();
