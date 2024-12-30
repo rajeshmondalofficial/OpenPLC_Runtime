@@ -405,6 +405,10 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
        }
     } 
     if(write_trigger) {
+      if(mode == 4) {
+        // AT+IPR
+        sprintf(at_command, "AT+IPR=%s\r\n",payload);
+      }
     }
     // sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
     if (read_trigger || write_trigger)
