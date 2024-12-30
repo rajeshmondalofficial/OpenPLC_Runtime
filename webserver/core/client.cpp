@@ -435,7 +435,7 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
         int byte_write = write(connection_id, at_command, strlen(at_command));
         sprintf(log_msg, "RYLR: Write AT Command => %sBytes Write => %d\n", at_command, byte_write);
         log(log_msg);
-        tcflush(connection_id, TCIOFLUSH);
+        tcflush(connection_id, TCIFLUSH);
 
         int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
         strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
