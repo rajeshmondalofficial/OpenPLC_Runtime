@@ -387,7 +387,7 @@ int get_uart_connection(uint8_t *device, int baud_rate)
 int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write_trigger, uint8_t *payload, int mode)
 {
     int connection_id = get_uart_connection(device, baud_rate);
-    
+
     if (connection_id < 0)
     {
         return 0;
@@ -436,18 +436,56 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
         sprintf(log_msg, "RYLR: Write AT Command => %sBytes Write => %d\n", at_command, byte_write);
         log(log_msg);
 
-        int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
-        strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
+        fd_set read_fds;
+        struct timeval timeout;
 
-        if (byte_read > 0)
+        FD_ZERO(&read_fds);
+        FD_SET(connection_id, &read_fds);
+
+        timeout.tv_sec = 15; // Timeout of 2 seconds
+        timeout.tv_usec = 0;
+
+        if (select(connection_id + 1, &read_fds, NULL, NULL, &timeout) > 0)
         {
-
-            msg_buffer[byte_read] = '\0';
-            sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_config_resp);
-            log(log_msg);
-            // tcflush(connection_id, TCIOFLUSH);
-            return connection_id;
+            if (FD_ISSET(connection_id, &read_fds))
+            {
+                char temp;
+                if (read(connection_id, &temp, 1) > 0)
+                {
+                    if (temp == '\n')
+                    { // End of packet
+                        msg_buffer[index] = '\0';
+                        // strcpy(rylr_message, buffer);
+                        sprintf(log_msg, "RYLR: Received Bytes => %s\n", msg_buffer);
+                        log(log_msg);
+                        index = 0;
+                        // rylr_msg_counter = rylr_msg_counter + 1;
+                    }
+                    else if (index < BUFFER_SIZE - 1)
+                    {
+                        msg_buffer[index++] = temp;
+                    }
+                }
+            }
         }
+        else
+        {
+            log("No data received within timeout\n");
+            printf("No data received within timeout\n");
+        }
+
+        // int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
+        // strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
+
+        // if (byte_read > 0)
+        // {
+
+        //     msg_buffer[byte_read] = '\0';
+        //     sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_config_resp);
+        //     log(log_msg);
+        //     // tcflush(connection_id, TCIOFLUSH);
+        //     return connection_id;
+        // }
     }
     return connection_id;
 }
