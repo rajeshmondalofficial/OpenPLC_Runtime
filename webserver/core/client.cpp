@@ -403,11 +403,18 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
          // AT+IPR
          sprintf(at_command, "AT+IPR?\r\n");
        }
+       if(mode == 5) {
+         sprintf(at_command, "AT+BAND?\r\n");
+       }
     } 
     if(write_trigger) {
       if(mode == 4) {
         // AT+IPR
         sprintf(at_command, "AT+IPR=%s\r\n",payload);
+      }
+      if(mode == 5) {
+        // AT+IPR
+        sprintf(at_command, "AT+BAND=%s\r\n",payload);
       }
     }
     // sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
