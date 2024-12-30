@@ -368,7 +368,7 @@ int get_uart_connection(uint8_t *device, int baud_rate)
         struct termios options;
         tcgetattr(mode_connection_id, &options);
 
-        options.c_cflag = B9600 | CS8 | CLOCAL | CREAD; // Baud rate: 9600, 8 data bits, no parity, 1 stop bit
+        options.c_cflag = baud_rate | CS8 | CLOCAL | CREAD; // Baud rate: 9600, 8 data bits, no parity, 1 stop bit
         options.c_iflag = IGNPAR;                       // Ignore framing errors
         options.c_oflag = 0;
         options.c_lflag = 0; // Non-canonical mode
