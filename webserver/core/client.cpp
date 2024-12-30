@@ -387,7 +387,7 @@ int get_uart_connection(uint8_t *device, int baud_rate)
 int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write_trigger, uint8_t *payload, int mode)
 {
     int connection_id = get_uart_connection(device, baud_rate);
-    tcflush(connection_id, TCIOFLUSH);
+    
     if (connection_id < 0)
     {
         return 0;
@@ -435,6 +435,7 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
         int byte_write = write(connection_id, at_command, strlen(at_command));
         sprintf(log_msg, "RYLR: Write AT Command => %sBytes Write => %d\n", at_command, byte_write);
         log(log_msg);
+        tcflush(connection_id, TCIOFLUSH);
 
         int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
         strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
