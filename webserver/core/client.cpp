@@ -427,7 +427,7 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
     if (read_trigger || write_trigger)
     {
 
-        int byte_write = write(connection_id, "AT+BAND?", strlen(at_command));
+        int byte_write = write(connection_id, "AT+BAND?\r\n", strlen(at_command));
         sprintf(log_msg, "RYLR: Write AT Command => %s, Bytes => %d\n", at_command, strlen(at_command));
         log(log_msg);
 
