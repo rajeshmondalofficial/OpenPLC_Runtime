@@ -434,7 +434,7 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
             msg_buffer[byte_read] = '\0';
             sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_config_resp);
             log(log_msg);
-            tcflush(connection_id, TCIOFLUSH);
+            // tcflush(connection_id, TCIOFLUSH);
             return connection_id;
         }
     }
