@@ -496,6 +496,10 @@ pthread_t thread_id;
             // AT+IPR
             sprintf(at_command, "AT+BAND=%s\r\n", payload);
         }
+        if (mode == 7)
+        {
+            sprintf(at_command, "AT+ADDRESS=%s\r\n", payload);
+        }
     }
     // sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
     if (read_trigger || write_trigger)
