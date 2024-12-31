@@ -393,6 +393,22 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
         return 0;
     }
 
+pthread_t thread_id;
+
+    if (uart_listening < 0)
+    {
+        if (pthread_create(&thread_id, NULL, listen_rylr_receive, connection_id) != 0)
+        {
+            perror("Failed to create UWslART listener thread");
+            uart_listening = -1;
+        }
+        else
+        {
+            log("RYLR998: Listening for Messages...");
+            uart_listening = 0; // Set flag to indicate UART listening
+        }
+    }
+
     char at_command[256];
     char msg_buffer[1024];
     char numStr[32];
@@ -436,44 +452,6 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
         int byte_write = write(connection_id, at_command, strlen(at_command));
         sprintf(log_msg, "RYLR: Write AT Command => %sBytes Write => %d\n", at_command, byte_write);
         log(log_msg);
-
-        fd_set read_fds;
-        struct timeval timeout;
-
-        FD_ZERO(&read_fds);
-        FD_SET(connection_id, &read_fds);
-
-        timeout.tv_sec = 15; // Timeout of 2 seconds
-        timeout.tv_usec = 0;
-
-        if (select(connection_id + 1, &read_fds, NULL, NULL, &timeout) > 0)
-        {
-            if (FD_ISSET(connection_id, &read_fds))
-            {
-                char temp;
-                if (read(connection_id, &temp, 1) > 0)
-                {
-                    if (temp == '\n')
-                    { // End of packet
-                        msg_buffer[index] = '\0';
-                        // strcpy(rylr_message, buffer);
-                        sprintf(log_msg, "RYLR: Received Bytes => %s\n", msg_buffer);
-                        log(log_msg);
-                        index = 0;
-                        // rylr_msg_counter = rylr_msg_counter + 1;
-                    }
-                    else if (index < BUFFER_SIZE - 1)
-                    {
-                        msg_buffer[index++] = temp;
-                    }
-                }
-            }
-        }
-        else
-        {
-            log("No data received within timeout\n");
-            printf("No data received within timeout\n");
-        }
 
         // int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
         // strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
