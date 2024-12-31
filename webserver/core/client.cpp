@@ -383,6 +383,58 @@ int get_uart_connection(uint8_t *device, int baud_rate)
     return mode_connection_id;
 }
 
+void listen_rylr_receive(int connection_id)
+{
+    // int connection_id = get_uart_connection(UART_DEVICE, 9600);
+    if (connection_id < 0)
+    {
+        log("Couldn't get connection");
+        return;
+    }
+    char buffer[1024];
+    int index = 0;
+    while (1)
+    {
+        fd_set read_fds;
+        struct timeval timeout;
+
+        FD_ZERO(&read_fds);
+        FD_SET(connection_id, &read_fds);
+
+        timeout.tv_sec = 15; // Timeout of 2 seconds
+        timeout.tv_usec = 0;
+
+        if (select(connection_id + 1, &read_fds, NULL, NULL, &timeout) > 0)
+        {
+            if (FD_ISSET(connection_id, &read_fds))
+            {
+                char temp;
+                if (read(connection_id, &temp, 1) > 0)
+                {
+                    if (temp == '\n')
+                    { // End of packet
+                        buffer[index] = '\0';
+                        strcpy(rylr_message, buffer);
+                        sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
+                        log(log_msg);
+                        index = 0;
+                        rylr_msg_counter = rylr_msg_counter + 1;
+                    }
+                    else if (index < BUFFER_SIZE - 1)
+                    {
+                        buffer[index++] = temp;
+                    }
+                }
+            }
+        }
+        else
+        {
+            log("No data received within timeout\n");
+            printf("No data received within timeout\n");
+        }
+    }
+}
+
 // RYLR Configuration Block
 int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write_trigger, uint8_t *payload, int mode)
 {
@@ -510,57 +562,7 @@ char *get_send_resp()
 {
     return rylr_send_resp;
 }
-void listen_rylr_receive(int connection_id)
-{
-    // int connection_id = get_uart_connection(UART_DEVICE, 9600);
-    if (connection_id < 0)
-    {
-        log("Couldn't get connection");
-        return;
-    }
-    char buffer[1024];
-    int index = 0;
-    while (1)
-    {
-        fd_set read_fds;
-        struct timeval timeout;
 
-        FD_ZERO(&read_fds);
-        FD_SET(connection_id, &read_fds);
-
-        timeout.tv_sec = 15; // Timeout of 2 seconds
-        timeout.tv_usec = 0;
-
-        if (select(connection_id + 1, &read_fds, NULL, NULL, &timeout) > 0)
-        {
-            if (FD_ISSET(connection_id, &read_fds))
-            {
-                char temp;
-                if (read(connection_id, &temp, 1) > 0)
-                {
-                    if (temp == '\n')
-                    { // End of packet
-                        buffer[index] = '\0';
-                        strcpy(rylr_message, buffer);
-                        sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
-                        log(log_msg);
-                        index = 0;
-                        rylr_msg_counter = rylr_msg_counter + 1;
-                    }
-                    else if (index < BUFFER_SIZE - 1)
-                    {
-                        buffer[index++] = temp;
-                    }
-                }
-            }
-        }
-        else
-        {
-            log("No data received within timeout\n");
-            printf("No data received within timeout\n");
-        }
-    }
-}
 // RYLR Received Block
 char *rylr_receive(int connection_id)
 {
