@@ -543,6 +543,9 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
     return connection_id;
 }
 
+char* get_config_response() {
+    return rylr_config_resp;
+}
 int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_data)
 {
     char at_command[256];
