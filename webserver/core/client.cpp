@@ -463,7 +463,7 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
     }
     mode_mode = 1;
 
-    pthread_t thread_id;
+    // pthread_t thread_id;
 
     // if (uart_listening < 0)
     // {
@@ -561,21 +561,21 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
         sprintf(log_msg, "RYLR: Write AT Command => %s\n", at_command);
         log(log_msg);
 
-        int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
-        strncpy(rylr_send_resp, msg_buffer, sizeof(rylr_send_resp) - 1);
-        sprintf(log_msg, "RYLR: Received Bytes => %d\n", byte_read);
-        log(log_msg);
+        // int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
+        // strncpy(rylr_send_resp, msg_buffer, sizeof(rylr_send_resp) - 1);
+        // sprintf(log_msg, "RYLR: Received Bytes => %d\n", byte_read);
+        // log(log_msg);
 
-        if (byte_read > 0)
-        {
+        // if (byte_read > 0)
+        // {
 
-            msg_buffer[byte_read] = '\0';
-            sprintf(log_msg, "RYLR: Received Bytes Message => %s\n", msg_buffer);
-            log(log_msg);
-            rylr_send_msg_counter = rylr_send_msg_counter + 1;
-            // tcflush(connection_id, TCIOFLUSH);
-            return 1;
-        }
+        //     msg_buffer[byte_read] = '\0';
+        //     sprintf(log_msg, "RYLR: Received Bytes Message => %s\n", msg_buffer);
+        //     log(log_msg);
+        //     rylr_send_msg_counter = rylr_send_msg_counter + 1;
+        //     // tcflush(connection_id, TCIOFLUSH);
+        //     return 1;
+        // }
     }
     return -1;
 }
