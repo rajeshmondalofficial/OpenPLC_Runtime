@@ -414,12 +414,13 @@ void listen_rylr_receive(int connection_id)
                     if (temp == '\n')
                     { // End of packet
                         buffer[index] = '\0';
-                        sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
-                        log(log_msg);
+                        
                         index = 0;
                         // IF: RYLR998 Modem is CONFIG Mode
                         if (mode_mode == 1)
                         {
+                            sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
+                        log(log_msg);
                             strncpy(rylr_config_resp, buffer, sizeof(rylr_config_resp) - 1);
                         }
                         // IF: RYLR998 Modem is Send Mode
