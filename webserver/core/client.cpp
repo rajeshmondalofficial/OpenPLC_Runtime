@@ -465,19 +465,19 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
 
     pthread_t thread_id;
 
-    if (uart_listening < 0)
-    {
-        if (pthread_create(&thread_id, NULL, listen_rylr_receive, connection_id) != 0)
-        {
-            perror("Failed to create UWslART listener thread");
-            uart_listening = -1;
-        }
-        else
-        {
-            log("RYLR998: Listening for Messages...");
-            uart_listening = 0; // Set flag to indicate UART listening
-        }
-    }
+    // if (uart_listening < 0)
+    // {
+    //     if (pthread_create(&thread_id, NULL, listen_rylr_receive, connection_id) != 0)
+    //     {
+    //         perror("Failed to create UWslART listener thread");
+    //         uart_listening = -1;
+    //     }
+    //     else
+    //     {
+    //         log("RYLR998: Listening for Messages...");
+    //         uart_listening = 0; // Set flag to indicate UART listening
+    //     }
+    // }
 
     char at_command[256];
     char msg_buffer[1024];
