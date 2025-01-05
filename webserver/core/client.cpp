@@ -47,7 +47,6 @@ int fd = -1;
 int serial_fd = -1;
 int listening = 0;
 int bytes_received;
-int should_listen = 1;
 
 // Global Variables
 int global_uart_fd = -1;
@@ -64,6 +63,7 @@ int rylr_send_msg_counter = 0;
 
 // RYLR998 Modem Specific Variables
 int mode_connection_id = -1;
+int mode_mode = -1;
 
 // UART Initialize
 void uart_init(uint8_t *device)
@@ -383,9 +383,9 @@ int get_uart_connection(uint8_t *device, int baud_rate)
     return mode_connection_id;
 }
 
+// RYLR998: This is a common listener for the RYLR998 Modem
 void listen_rylr_receive(int connection_id)
 {
-    // int connection_id = get_uart_connection(UART_DEVICE, 9600);
     if (connection_id < 0)
     {
         log("Couldn't get connection");
@@ -414,11 +414,25 @@ void listen_rylr_receive(int connection_id)
                     if (temp == '\n')
                     { // End of packet
                         buffer[index] = '\0';
-                        strcpy(rylr_message, buffer);
                         sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
                         log(log_msg);
                         index = 0;
-                        rylr_msg_counter = rylr_msg_counter + 1;
+                        // IF: RYLR998 Modem is CONFIG Mode
+                        if (mode_mode == 1)
+                        {
+                            strcpy(rylr_config_resp, buffer);
+                        }
+                        // IF: RYLR998 Modem is Send Mode
+                        if (mode_mode == 2)
+                        {
+                            strcpy(rylr_send_resp, buffer);
+                        }
+                        // IF: RYLR998 Modem is Receive Mode
+                        if (mode_mode == 3)
+                        {
+                            strcpy(rylr_message, buffer);
+                            rylr_msg_counter = rylr_msg_counter + 1;
+                        }
                     }
                     else if (index < BUFFER_SIZE - 1)
                     {
@@ -429,8 +443,11 @@ void listen_rylr_receive(int connection_id)
         }
         else
         {
-            log("No data received within timeout\n");
-            printf("No data received within timeout\n");
+            if (mode_mode == 3)
+            {
+                log("No data received within timeout\n");
+                printf("No data received within timeout\n");
+            }
         }
     }
 }
@@ -444,8 +461,9 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
     {
         return 0;
     }
+    mode_mode = 1;
 
-pthread_t thread_id;
+    pthread_t thread_id;
 
     if (uart_listening < 0)
     {
@@ -529,6 +547,7 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
 {
     char at_command[256];
     char msg_buffer[256];
+    mode_mode = 2;
 
     // Convert the integer to a string
     sprintf(at_command, "AT+SEND=%u,%d,%s\r\n", address, strlen(payload_data), payload_data);
@@ -571,6 +590,7 @@ char *get_send_resp()
 char *rylr_receive(int connection_id)
 {
     pthread_t thread_id;
+    mode_mode = 3;
 
     if (uart_listening < 0)
     {
