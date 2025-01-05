@@ -420,17 +420,17 @@ void listen_rylr_receive(int connection_id)
                         // IF: RYLR998 Modem is CONFIG Mode
                         if (mode_mode == 1)
                         {
-                            strcpy(rylr_config_resp, buffer);
+                            strncpy(rylr_config_resp, buffer, sizeof(rylr_config_resp) - 1);
                         }
                         // IF: RYLR998 Modem is Send Mode
                         if (mode_mode == 2)
                         {
-                            strcpy(rylr_send_resp, buffer);
+                            strncpy(rylr_send_resp, buffer,  sizeof(rylr_send_resp) - 1);
                         }
                         // IF: RYLR998 Modem is Receive Mode
                         if (mode_mode == 3)
                         {
-                            strcpy(rylr_message, buffer);
+                            strncpy(rylr_message, buffer, sizeof(rylr_message) - 1);
                             rylr_msg_counter = rylr_msg_counter + 1;
                         }
                     }
@@ -463,21 +463,21 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
     }
     mode_mode = 1;
 
-    // pthread_t thread_id;
+    pthread_t thread_id;
 
-    // if (uart_listening < 0)
-    // {
-    //     if (pthread_create(&thread_id, NULL, listen_rylr_receive, connection_id) != 0)
-    //     {
-    //         perror("Failed to create UWslART listener thread");
-    //         uart_listening = -1;
-    //     }
-    //     else
-    //     {
-    //         log("RYLR998: Listening for Messages...");
-    //         uart_listening = 0; // Set flag to indicate UART listening
-    //     }
-    // }
+    if (uart_listening < 0)
+    {
+        if (pthread_create(&thread_id, NULL, listen_rylr_receive, connection_id) != 0)
+        {
+            perror("Failed to create UWslART listener thread");
+            uart_listening = -1;
+        }
+        else
+        {
+            log("RYLR998: Listening for Messages...");
+            uart_listening = 0; // Set flag to indicate UART listening
+        }
+    }
 
     char at_command[256];
     char msg_buffer[1024];
