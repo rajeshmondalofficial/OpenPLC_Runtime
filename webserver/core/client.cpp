@@ -556,6 +556,22 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
     char msg_buffer[256];
     mode_mode = 2;
 
+    pthread_t thread_id;
+
+    if (uart_listening < 0)
+    {
+        if (pthread_create(&thread_id, NULL, listen_rylr_receive, connection_id) != 0)
+        {
+            perror("Failed to create UWslART listener thread");
+            uart_listening = -1;
+        }
+        else
+        {
+            log("RYLR998: Listening for Messages...");
+            uart_listening = 0; // Set flag to indicate UART listening
+        }
+    }
+
     // Convert the integer to a string
     sprintf(at_command, "AT+SEND=%u,%d,%s\r\n", address, strlen(payload_data), payload_data);
     if (trigger)
