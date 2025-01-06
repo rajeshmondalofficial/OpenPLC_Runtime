@@ -420,7 +420,7 @@ void listen_rylr_receive(int connection_id)
                         if (mode_mode == 1)
                         {
                             sprintf(log_msg, "RYLR: Received Bytes => %s\n", buffer);
-                        log(log_msg);
+                            log(log_msg);
                             strncpy(rylr_config_resp, buffer, sizeof(rylr_config_resp) - 1);
                         }
                         // IF: RYLR998 Modem is Send Mode

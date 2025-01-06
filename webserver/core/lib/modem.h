@@ -52,6 +52,7 @@ typedef struct
   __DECLARE_VAR(STRING, SNR)
 } RYLR998_RECEIVE;
 
+int get_uart_connection(uint8_t *device, int baud_rate);
 int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write_trigger, uint8_t *payload, int mode);
 int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_data);
 char *rylr_receive(int connection_id);
@@ -110,6 +111,9 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
     response.len = (uint8_t)strlen(config_response_msg);
     SetFbVar(RESPONSE, response);
     SetFbVar(CONNECTION_ID, config_response);
+  } else {
+    int conn_id = get_uart_connection(device.body, baud_rate);
+    SetFbVar(CONNECTION_ID, conn_id);
   }
 
 #undef GetFbVar
