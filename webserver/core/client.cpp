@@ -414,7 +414,7 @@ void listen_rylr_receive(int connection_id)
                     if (temp == '\n')
                     { // End of packet
                         buffer[index] = '\0';
-                        
+
                         index = 0;
                         // IF: RYLR998 Modem is CONFIG Mode
                         if (mode_mode == 1)
@@ -426,7 +426,8 @@ void listen_rylr_receive(int connection_id)
                         // IF: RYLR998 Modem is Send Mode
                         if (mode_mode == 2)
                         {
-                            strncpy(rylr_send_resp, buffer,  sizeof(rylr_send_resp) - 1);
+                            strncpy(rylr_send_resp, buffer, sizeof(rylr_send_resp) - 1);
+                            rylr_send_msg_counter = rylr_send_msg_counter + 1;
                         }
                         // IF: RYLR998 Modem is Receive Mode
                         if (mode_mode == 3)
@@ -544,7 +545,8 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
     return connection_id;
 }
 
-char *get_config_response() {
+char *get_config_response()
+{
     return rylr_config_resp;
 }
 
@@ -561,22 +563,6 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
         int byte_write = write(connection_id, at_command, strlen(at_command));
         sprintf(log_msg, "RYLR: Write AT Command => %s\n", at_command);
         log(log_msg);
-
-        // int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
-        // strncpy(rylr_send_resp, msg_buffer, sizeof(rylr_send_resp) - 1);
-        // sprintf(log_msg, "RYLR: Received Bytes => %d\n", byte_read);
-        // log(log_msg);
-
-        // if (byte_read > 0)
-        // {
-
-        //     msg_buffer[byte_read] = '\0';
-        //     sprintf(log_msg, "RYLR: Received Bytes Message => %s\n", msg_buffer);
-        //     log(log_msg);
-        //     rylr_send_msg_counter = rylr_send_msg_counter + 1;
-        //     // tcflush(connection_id, TCIOFLUSH);
-        //     return 1;
-        // }
     }
     return -1;
 }
