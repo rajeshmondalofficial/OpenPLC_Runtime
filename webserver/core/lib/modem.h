@@ -168,11 +168,11 @@ static void RYLR998_SEND_body__(RYLR998_SEND *data__)
     char *send_response_msg = get_send_resp();
 
     strncpy((char *)response.body, send_response_msg, strlen(send_response_msg)); // Copy data to body
-    response.body[strlen(send_response_msg)] = '\0';                            // Null-terminate
+    response.body[strlen(send_response_msg)-2] = '\0';                            // Null-terminate
     response.len = (uint8_t)strlen(send_response_msg);
 
     SetFbVar(MSG_COUNTER, msg_counter);
-    // SetFbVar(MSG_LEN, strlen(payload_data.body));
+    SetFbVar(MSG_LEN, send_response);
     SetFbVar(RESPONSE, response);
   }
 
