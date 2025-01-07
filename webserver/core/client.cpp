@@ -521,26 +521,12 @@ int rylr998_config(uint8_t *device, int baud_rate, bool read_trigger, bool write
             sprintf(at_command, "AT+ADDRESS=%s\r\n", payload);
         }
     }
-    // sprintf(at_command, "AT+ADDRESS=%u\r\n", frequency);
     if (read_trigger || write_trigger)
     {
 
         int byte_write = write(connection_id, at_command, strlen(at_command));
         sprintf(log_msg, "RYLR: Write AT Command => %sBytes Write => %d\n", at_command, byte_write);
         log(log_msg);
-
-        // int byte_read = read(connection_id, msg_buffer, sizeof(msg_buffer) - 1);
-        // strncpy(rylr_config_resp, msg_buffer, sizeof(rylr_config_resp) - 1);
-
-        // if (byte_read > 0)
-        // {
-
-        //     msg_buffer[byte_read] = '\0';
-        //     sprintf(log_msg, "RYLR: Received Bytes => %s\n", rylr_config_resp);
-        //     log(log_msg);
-        //     // tcflush(connection_id, TCIOFLUSH);
-        //     return connection_id;
-        // }
     }
     return connection_id;
 }

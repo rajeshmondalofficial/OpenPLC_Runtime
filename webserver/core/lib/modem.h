@@ -106,7 +106,7 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
     char *config_response_msg = get_config_response();
 
     strncpy((char *)response.body, config_response_msg, strlen(config_response_msg)); // Copy data to body
-    response.body[strlen(config_response_msg)] = '\0';                                // Null-terminate
+    response.body[strlen(config_response_msg)-1] = '\0';                                // Null-terminate
     response.len = (uint8_t)strlen(config_response_msg);
     SetFbVar(RESPONSE, response);
     SetFbVar(CONNECTION_ID, config_response);
