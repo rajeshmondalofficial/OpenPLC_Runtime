@@ -268,7 +268,7 @@ static void RYLR998_RECEIVE_body__(RYLR998_RECEIVE *data__)
 
           // Set SNR
           strncpy((char *)snr.body, snr_payload, strlen(snr_payload)); // Copy data to body
-          snr.body[strlen(snr_payload)] = '\0';                        // Null-terminate
+          snr.body[strlen(snr_payload)-1] = '\0';                        // Null-terminate
           snr.len = (uint8_t)strlen(snr_payload);
         }
       }
