@@ -61,7 +61,6 @@ int get_rylr_send_msg_counter();
 char *get_send_resp();
 char *get_config_response();
 
-
 static void RYLR998_CONFIG_init__(RYLR998_CONFIG *data__, BOOL retain)
 {
   __INIT_VAR(data__->EN, __BOOL_LITERAL(TRUE), retain)
@@ -107,11 +106,13 @@ static void RYLR998_CONFIG_body__(RYLR998_CONFIG *data__)
     char *config_response_msg = get_config_response();
 
     strncpy((char *)response.body, config_response_msg, strlen(config_response_msg)); // Copy data to body
-    response.body[strlen(config_response_msg)] = '\0';                            // Null-terminate
+    response.body[strlen(config_response_msg)] = '\0';                                // Null-terminate
     response.len = (uint8_t)strlen(config_response_msg);
     SetFbVar(RESPONSE, response);
     SetFbVar(CONNECTION_ID, config_response);
-  } else {
+  }
+  else
+  {
     int conn_id = get_uart_connection(device.body, baud_rate);
     SetFbVar(CONNECTION_ID, conn_id);
   }
@@ -168,7 +169,7 @@ static void RYLR998_SEND_body__(RYLR998_SEND *data__)
     char *send_response_msg = get_send_resp();
 
     strncpy((char *)response.body, send_response_msg, strlen(send_response_msg)); // Copy data to body
-    response.body[strlen(send_response_msg)-2] = '\0';                            // Null-terminate
+    response.body[strlen(send_response_msg) - 1] = '\0';                          // Null-terminate
     response.len = (uint8_t)strlen(send_response_msg);
 
     SetFbVar(MSG_COUNTER, msg_counter);
@@ -176,8 +177,6 @@ static void RYLR998_SEND_body__(RYLR998_SEND *data__)
     SetFbVar(RESPONSE, response);
   }
 
-  // SetFbVar(BYTES_SENT, send_response);
-  // SetFbVar(SUCCESS, send_response == 0);
 #undef GetFbVar
 #undef SetFbVar
 

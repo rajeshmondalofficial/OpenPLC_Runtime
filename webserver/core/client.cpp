@@ -579,9 +579,9 @@ int rylr_send(int connection_id, bool trigger, int address, uint8_t *payload_dat
         int byte_write = write(connection_id, at_command, strlen(at_command));
         sprintf(log_msg, "RYLR: Write AT Command => %s\n", at_command);
         log(log_msg);
-        return byte_write;
+        return strlen(payload_data);
     }
-    return -1;
+    return strlen(payload_data);
 }
 
 int get_rylr_send_msg_counter()
